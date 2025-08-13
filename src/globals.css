@@ -1,0 +1,54 @@
+@import 'tailwindcss';
+@import 'pretendard/dist/web/static/pretendard.css';
+
+@theme {
+  --font-family-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+
+  --color-primary: #326cf9;
+  --color-gray-1: #111111;
+  --color-gray-2: #333333;
+  --color-gray-3: #555555;
+  --color-gray-4: #797979;
+  --color-gray-5: #d0d0d9;
+  --color-gray-6: #ededed;
+  --color-error: #ef4136;
+}
+
+@layer utilities {
+  .sb1 {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+  .m1 {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 24px;
+  }
+  .r1 {
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+  .r2 {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0;
+  }
+  .r3 {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: -0.03em;
+  }
+}
+
+@layer base {
+  body {
+    @apply font-family-sans;
+  }
+}
