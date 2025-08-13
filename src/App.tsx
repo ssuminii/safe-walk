@@ -1,7 +1,11 @@
+import { Navbar } from './components'
+import { SearchPage } from './pages/search-page'
+
 function App() {
   return (
-    <div>
-      <h1>main</h1>
+    <div className='w-full flex flex-col min-h-screen bg-white'>
+      <Navbar />
+      <SearchPage />
     </div>
   )
 }
