@@ -2,7 +2,12 @@ import { RegionInfo, AccidentInfoCard } from './'
 import { regionAccidentInfo } from '../mocks'
 import Alert from '../../assets/alert.svg?react'
 
-const SideBar = ({ selectedRegionId }: { selectedRegionId: string | null }) => {
+interface SideBarProps {
+  selectedRegionId: string | null
+  selectedAccidentId: string | null
+}
+
+const SideBar = ({ selectedRegionId, selectedAccidentId }: SideBarProps) => {
   const accidentInfo = selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo : null
 
   return (
@@ -10,7 +15,11 @@ const SideBar = ({ selectedRegionId }: { selectedRegionId: string | null }) => {
       <RegionInfo accidentInfo={accidentInfo} />
       {accidentInfo ? (
         accidentInfo.accidents.map((accident) => (
-          <AccidentInfoCard key={accident.id} accident={accident} />
+          <AccidentInfoCard
+            key={accident.id}
+            accident={accident}
+            isSelected={selectedAccidentId === accident.id}
+          />
         ))
       ) : (
         <div className='flex flex-col justify-center items-center gap-3 h-full'>

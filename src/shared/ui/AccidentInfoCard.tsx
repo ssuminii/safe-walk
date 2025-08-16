@@ -1,8 +1,15 @@
 import type { AccidentInfoCard as Accident } from '../types/map'
 
-export const AccidentInfoCard = ({ accident }: { accident: Accident }) => {
+interface AccidentInfoCardProps {
+  accident: Accident
+  isSelected?: boolean
+}
+
+export const AccidentInfoCard = ({ accident, isSelected = false }: AccidentInfoCardProps) => {
   return (
-    <div className='border rounded-xl h-[108px] p-4 border-[#f7f7f7]'>
+    <div
+      className={`border rounded-xl h-[108px] p-4 border-${isSelected ? 'error' : '[#f7f7f7]'} `}
+    >
       <div className='rounded-lg text-error s1 py-1 px-1.5 pb-1'>
         사고 {accident.accidentCount}건
       </div>

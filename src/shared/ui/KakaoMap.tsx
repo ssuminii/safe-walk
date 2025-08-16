@@ -7,11 +7,12 @@ import { regionAccidentInfo } from '../mocks'
 interface KakaoMapProps {
   mapRegionLabels: mapRegionLabel[]
   onSelectRegion: (regionId: string | null) => void
+  onSelectAccident: (accidentId: string | null) => void
 }
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
 
-const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
+const KakaoMap = ({ mapRegionLabels, onSelectRegion, onSelectAccident }: KakaoMapProps) => {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [selectedAccidentId, setSelectedAccidentId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
@@ -24,17 +25,22 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
       if (selectedRegion) {
         setSelectedRegionId(regionId)
         setSelectedAccidentId(null)
+        onSelectAccident(null)
         setMapCenter(selectedRegion.center)
         setMapLevel(3)
         onSelectRegion(regionId)
       }
     },
-    [mapRegionLabels, onSelectRegion]
+    [mapRegionLabels, onSelectRegion, onSelectAccident]
   )
 
-  const handleAccidentPinClick = useCallback((accidentId: string) => {
-    setSelectedAccidentId(accidentId)
-  }, [])
+  const handleAccidentPinClick = useCallback(
+    (accidentId: string) => {
+      setSelectedAccidentId(accidentId)
+      onSelectAccident(accidentId)
+    },
+    [onSelectAccident]
+  )
 
   const handleZoomChanged = useCallback(
     (map: kakao.maps.Map) => {
@@ -45,9 +51,10 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
         setSelectedRegionId(null)
         setSelectedAccidentId(null)
         onSelectRegion(null)
+        onSelectAccident(null)
       }
     },
-    [selectedRegionId, onSelectRegion]
+    [selectedRegionId, onSelectRegion, onSelectAccident]
   )
 
   const handleCenterChanged = useCallback((map: kakao.maps.Map) => {
