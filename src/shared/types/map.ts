@@ -1,0 +1,29 @@
+export type LatLng = { lat: number; lng: number } 
+
+export type AccidentLevel = 0 | 1 | 2 
+
+export interface mapRegionLabel { 
+  id: string
+  gu: '경주시'            
+  name: string
+  center: LatLng
+  level: AccidentLevel
+  accidentCount: number
+}
+
+export interface Casualties { 
+  total: number
+  dead: number
+  severe: number
+  minor: number
+}
+
+export interface AccidentInfoCard { 
+  id: string
+  dongId: string
+  location: string
+  accidentCount: number
+  casualties: Casualties
+  point?: LatLng
+}
+
