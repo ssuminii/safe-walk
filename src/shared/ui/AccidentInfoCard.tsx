@@ -8,7 +8,9 @@ interface AccidentInfoCardProps {
 export const AccidentInfoCard = ({ accident, isSelected = false }: AccidentInfoCardProps) => {
   return (
     <div
-      className={`border rounded-xl h-[108px] p-4 border-${isSelected ? 'error' : '[#f7f7f7]'} `}
+      className={`border rounded-xl h-[108px] p-4 ${
+        isSelected ? 'border-error' : 'border-[#f7f7f7]'
+      }`}
     >
       <div className='rounded-lg text-error s1 py-1 px-1.5 pb-1'>
         사고 {accident.accidentCount}건
