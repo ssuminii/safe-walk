@@ -6,10 +6,17 @@ interface SideBarProps {
   selectedRegionId: string | null
   selectedAccidentId: string | null
   onAccidentCardClick: (accidentId: string) => void
+  search: string
 }
 
-const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
-  const accidentInfo = selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo : null
+const SideBar = ({
+  selectedRegionId,
+  selectedAccidentId,
+  onAccidentCardClick,
+  search,
+}: SideBarProps) => {
+  const accidentInfo =
+    selectedRegionId === 'GJ-Hwangnam' || search === '황남동' ? regionAccidentInfo : null
 
   return (
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>
