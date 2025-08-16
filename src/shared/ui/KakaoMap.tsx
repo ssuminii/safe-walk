@@ -1,6 +1,6 @@
 import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
 import type { mapRegionLabel } from '../types/map'
-import { AccidentPin, MapRegionLabel } from './'
+import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
 import { useCallback, useState } from 'react'
 import { regionAccidentInfo } from '../mocks'
 
@@ -13,6 +13,7 @@ const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
 
 const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
+  const [selectedAccidentId, setSelectedAccidentId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
 
@@ -22,6 +23,7 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
 
       if (selectedRegion) {
         setSelectedRegionId(regionId)
+        setSelectedAccidentId(null)
         setMapCenter(selectedRegion.center)
         setMapLevel(3)
         onSelectRegion(regionId)
@@ -30,12 +32,31 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
     [mapRegionLabels, onSelectRegion]
   )
 
-  const handleMapClick = useCallback(() => {
-    setSelectedRegionId(null)
-    setMapCenter(HWANGNIDANGIL)
-    setMapLevel(7)
-    onSelectRegion(null)
-  }, [onSelectRegion])
+  const handleAccidentPinClick = useCallback((accidentId: string) => {
+    setSelectedAccidentId(accidentId)
+  }, [])
+
+  const handleZoomChanged = useCallback(
+    (map: kakao.maps.Map) => {
+      const currentLevel = map.getLevel()
+      setMapLevel(currentLevel)
+
+      if (currentLevel >= 7 && selectedRegionId) {
+        setSelectedRegionId(null)
+        setSelectedAccidentId(null)
+        onSelectRegion(null)
+      }
+    },
+    [selectedRegionId, onSelectRegion]
+  )
+
+  const handleCenterChanged = useCallback((map: kakao.maps.Map) => {
+    const center = map.getCenter()
+    setMapCenter({
+      lat: center.getLat(),
+      lng: center.getLng(),
+    })
+  }, [])
 
   const selectedAccidentInfo =
     selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo.accidents : []
@@ -46,7 +67,8 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
       style={{ width: '100%', height: '100%' }}
       className='flex-3'
       level={mapLevel}
-      onClick={handleMapClick}
+      onZoomChanged={handleZoomChanged}
+      onCenterChanged={handleCenterChanged}
     >
       {!selectedRegionId &&
         mapRegionLabels.map((regionLabel) => (
@@ -66,7 +88,14 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
       {selectedRegionId === 'GJ-Hwangnam' &&
         selectedAccidentInfo.map((accidentInfo) => (
           <CustomOverlayMap key={accidentInfo.id} position={accidentInfo.point}>
-            <AccidentPin accidentCount={accidentInfo.accidentCount} />
+            {selectedAccidentId === accidentInfo.id ? (
+              <AccidentSelectedPin accidentCount={accidentInfo.accidentCount} />
+            ) : (
+              <AccidentPin
+                accidentCount={accidentInfo.accidentCount}
+                onClick={() => handleAccidentPinClick(accidentInfo.id)}
+              />
+            )}
           </CustomOverlayMap>
         ))}
     </Map>
