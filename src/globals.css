@@ -1,18 +1,9 @@
 @import 'tailwindcss';
 @import 'pretendard/dist/web/static/pretendard.css';
 
-@font-face {
-  font-family: 'SBAggroB';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff')
-    format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
 @theme {
   --font-family-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
     system-ui, sans-serif;
-  --font-family-aggro: 'SBAggroB', -apple-system, BlinkMacSystemFont, sans-serif;
 
   --color-primary: #326cf9;
   --color-gray-1: #111111;
