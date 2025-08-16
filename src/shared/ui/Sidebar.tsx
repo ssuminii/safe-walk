@@ -1,5 +1,4 @@
-import { RegionInfo } from './'
-import AccidentInfoCard from './AccidentInfoCard'
+import { RegionInfo, AccidentInfoCard } from './'
 
 const SideBar = () => {
   return (

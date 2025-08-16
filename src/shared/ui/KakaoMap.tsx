@@ -1,12 +1,25 @@
 import { Map } from 'react-kakao-maps-sdk'
+import { useGeolocation } from '../hooks'
+
+const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 }
 
 const KakaoMap = () => {
+  const { position, loading, error } = useGeolocation(true)
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
+
+  if (error) {
+    return <div>위치 접근에 실패했습니다: {error}</div>
+  }
+
   return (
     <Map
-      center={{ lat: 33.450701, lng: 126.570667 }}
-      style={{ width: '100%', height: '100dvh' }}
+      center={position ?? DEFAULT_CENTER}
+      style={{ width: '100%', height: '100%' }}
       className='flex-3'
-      level={3}
+      level={7}
     />
   )
 }
