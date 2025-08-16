@@ -11,6 +11,14 @@ export interface mapRegionLabel {
   accidentCount: number
 }
 
+
+export interface RegionAccidentInfo {
+  totalAccident: number
+  regionId: string
+  name: string
+  accidents: AccidentInfoCard[]
+}
+
 export interface Casualties { 
   total: number
   dead: number
@@ -18,12 +26,13 @@ export interface Casualties {
   minor: number
 }
 
-export interface AccidentInfoCard { 
+export interface AccidentInfoCard {
   id: string
-  dongId: string
   location: string
   accidentCount: number
   casualties: Casualties
-  point?: LatLng
+  point: {
+    lat: number
+    lng: number
+  }
 }
-

@@ -1,1 +1,2 @@
-export * from './MapRegionLabel'
+export * from './mapRegionLabel'
+export * from './regionAccidentInfo'
