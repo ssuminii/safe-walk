@@ -1,5 +1,4 @@
-import KakaoMap from '../../components/KakaoMap'
-import SideBar from '../../components/SideBar'
+import { KakaoMap, SideBar } from '../../shared/ui'
 
 const SearchPage = () => {
   return (
