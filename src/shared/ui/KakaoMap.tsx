@@ -37,7 +37,8 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
     onSelectRegion(null)
   }, [onSelectRegion])
 
-  const selectedAccidentInfo = selectedRegionId === 'GJ-Hwango' ? regionAccidentInfo.accidents : []
+  const selectedAccidentInfo =
+    selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo.accidents : []
 
   return (
     <Map
@@ -62,27 +63,21 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
           </CustomOverlayMap>
         ))}
 
-      {selectedRegionId &&
-        selectedAccidentInfo.map((accidentInfo) => (
-          <MapMarker
-            key={accidentInfo.id}
-            position={accidentInfo.point}
-            image={{
-              src: '../../assets/accident-pin.svg',
-              size: {
-                width: 48,
-                height: 48,
-              },
-              options: {
-                offset: {
-                  x: 24,
-                  y: 48,
-                },
-              },
-            }}
-            title={`${accidentInfo.location} - 사고 ${accidentInfo.accidentCount}건`}
-          />
-        ))}
+      {selectedRegionId === 'GJ-Hwangnam' &&
+        selectedAccidentInfo.map((accidentInfo) => {
+          console.log(accidentInfo)
+          return (
+            <MapMarker
+              key={accidentInfo.id}
+              position={accidentInfo.point}
+              image={{
+                src: '/accident-pin.svg',
+                size: { width: 60, height: 68 },
+                options: { offset: { x: 24, y: 48 } },
+              }}
+            />
+          )
+        })}
     </Map>
   )
 }

@@ -9,7 +9,9 @@ const SideBar = ({ selectedRegionId }: { selectedRegionId: string | null }) => {
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>
       <RegionInfo accidentInfo={accidentInfo} />
       {accidentInfo ? (
-        accidentInfo.accidents.map((accident) => <AccidentInfoCard accident={accident} />)
+        accidentInfo.accidents.map((accident) => (
+          <AccidentInfoCard key={accident.id} accident={accident} />
+        ))
       ) : (
         <div className='flex flex-col justify-center items-center gap-3 h-full'>
           <Alert />
