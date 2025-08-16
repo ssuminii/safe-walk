@@ -5,9 +5,10 @@ import Alert from '../../assets/alert.svg?react'
 interface SideBarProps {
   selectedRegionId: string | null
   selectedAccidentId: string | null
+  onAccidentCardClick: (accidentId: string) => void
 }
 
-const SideBar = ({ selectedRegionId, selectedAccidentId }: SideBarProps) => {
+const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
   const accidentInfo = selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo : null
 
   return (
@@ -19,6 +20,7 @@ const SideBar = ({ selectedRegionId, selectedAccidentId }: SideBarProps) => {
             key={accident.id}
             accident={accident}
             isSelected={selectedAccidentId === accident.id}
+            onClick={() => onAccidentCardClick(accident.id)}
           />
         ))
       ) : (

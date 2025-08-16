@@ -3,14 +3,20 @@ import type { AccidentInfoCard as Accident } from '../types/map'
 interface AccidentInfoCardProps {
   accident: Accident
   isSelected?: boolean
+  onClick?: () => void
 }
 
-export const AccidentInfoCard = ({ accident, isSelected = false }: AccidentInfoCardProps) => {
+export const AccidentInfoCard = ({
+  accident,
+  isSelected = false,
+  onClick,
+}: AccidentInfoCardProps) => {
   return (
     <div
       className={`border rounded-xl h-[108px] p-4 ${
         isSelected ? 'border-error' : 'border-[#f7f7f7]'
-      }`}
+      } cursor-pointer`}
+      onClick={onClick}
     >
       <div className='rounded-lg text-error s1 py-1 px-1.5 pb-1'>
         사고 {accident.accidentCount}건
