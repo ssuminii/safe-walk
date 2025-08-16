@@ -1,6 +1,6 @@
-import { CustomOverlayMap, Map, MapMarker } from 'react-kakao-maps-sdk'
+import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
 import type { mapRegionLabel } from '../types/map'
-import { MapRegionLabel } from './'
+import { AccidentPin, MapRegionLabel } from './'
 import { useCallback, useState } from 'react'
 import { regionAccidentInfo } from '../mocks'
 
@@ -64,20 +64,11 @@ const KakaoMap = ({ mapRegionLabels, onSelectRegion }: KakaoMapProps) => {
         ))}
 
       {selectedRegionId === 'GJ-Hwangnam' &&
-        selectedAccidentInfo.map((accidentInfo) => {
-          console.log(accidentInfo)
-          return (
-            <MapMarker
-              key={accidentInfo.id}
-              position={accidentInfo.point}
-              image={{
-                src: '/accident-pin.svg',
-                size: { width: 60, height: 68 },
-                options: { offset: { x: 24, y: 48 } },
-              }}
-            />
-          )
-        })}
+        selectedAccidentInfo.map((accidentInfo) => (
+          <CustomOverlayMap key={accidentInfo.id} position={accidentInfo.point}>
+            <AccidentPin accidentCount={accidentInfo.accidentCount} />
+          </CustomOverlayMap>
+        ))}
     </Map>
   )
 }
