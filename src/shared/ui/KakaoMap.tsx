@@ -4,7 +4,7 @@ import { useGeolocation } from '../hooks'
 const DEFAULT_CENTER = { lat: 37.5665, lng: 126.978 }
 
 const KakaoMap = () => {
-  const { position, loading, error } = useGeolocation(true)
+  const { position, loading, error } = useGeolocation()
 
   if (loading) {
     return <div>Loading...</div>
