@@ -14,11 +14,11 @@ export const AccidentInfoCard = ({
   return (
     <div
       className={`border rounded-xl h-[108px] p-4 ${
-        isSelected ? 'border-error' : 'border-[#f7f7f7]'
+        isSelected ? 'border-error' : 'border-gray-8'
       } cursor-pointer`}
       onClick={onClick}
     >
-      <div className='rounded-lg text-error s1 py-1 px-1.5 pb-1'>
+      <div className='rounded-lg text-error s1 py-1 px-1.5 mb-1 bg-gray-8 w-fit'>
         사고 {accident.accidentCount}건
       </div>
       <h2 className='r3'>{accident.location}</h2>
