@@ -36,3 +36,12 @@ export interface AccidentInfoCard {
     lng: number
   }
 }
+
+// 지도 영역 내 관광지 조회
+export interface Emd {
+  name: string,
+  totalAccident: number,
+  EMD_CD: string,
+  latitude: number,
+  longitude: number
+}

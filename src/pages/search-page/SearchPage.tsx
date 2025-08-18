@@ -1,5 +1,4 @@
 import { KakaoMap, SideBar } from '../../shared/ui'
-import { mapRegionLabels } from '../../shared/mocks'
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
@@ -22,7 +21,6 @@ const SearchPage = () => {
         search={query ?? ''}
       />
       <KakaoMap
-        mapRegionLabels={mapRegionLabels}
         onSelectRegion={setSelectedRegionId}
         selectedAccidentId={selectedAccidentId}
         onSelectAccident={setSelectedAccidentId}

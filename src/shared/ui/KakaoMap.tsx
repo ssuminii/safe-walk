@@ -1,11 +1,11 @@
 import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
-import type { mapRegionLabel } from '../types/map'
-import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
-import { useCallback, useEffect, useState } from 'react'
+import type { Emd } from '../types/map'
+import { MapRegionLabel } from './'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { regionAccidentInfo } from '../mocks'
+import { getTouristSpots } from '../../pages/search-page/api/tourlistSpot'
 
 interface KakaoMapProps {
-  mapRegionLabels: mapRegionLabel[]
   onSelectRegion: (regionId: string | null) => void
   selectedAccidentId: string | null
   onSelectAccident: (accidentId: string | null) => void
@@ -13,15 +13,13 @@ interface KakaoMapProps {
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
 
-const KakaoMap = ({
-  mapRegionLabels,
-  onSelectRegion,
-  selectedAccidentId,
-  onSelectAccident,
-}: KakaoMapProps) => {
+const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: KakaoMapProps) => {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
+  const [touristSpots, setTouristSpots] = useState<Emd[]>([])
+  const [hasFetchedTouristSpots, setHasFetchedTouristSpots] = useState(false)
+  const mapRef = useRef<kakao.maps.Map | null>(null)
 
   const handleRegionSelect = useCallback(
     (regionId: string) => {
@@ -31,12 +29,12 @@ const KakaoMap = ({
     [onSelectRegion]
   )
 
-  const handleAccidentPinClick = useCallback(
-    (accidentId: string) => {
-      onSelectAccident(accidentId)
-    },
-    [onSelectAccident]
-  )
+  // const handleAccidentPinClick = useCallback(
+  //   (accidentId: string) => {
+  //     onSelectAccident(accidentId)
+  //   },
+  //   [onSelectAccident]
+  // )
 
   const handleZoomChanged = useCallback(
     (map: kakao.maps.Map) => {
@@ -48,9 +46,32 @@ const KakaoMap = ({
         onSelectRegion(null)
         onSelectAccident(null)
       }
+
+      if (currentLevel === 7 && !hasFetchedTouristSpots) {
+        fetchTouristSpots(map)
+      }
     },
-    [selectedRegionId, onSelectRegion, onSelectAccident]
+    [selectedRegionId, onSelectRegion, onSelectAccident, hasFetchedTouristSpots]
   )
+
+  const fetchTouristSpots = async (map: kakao.maps.Map) => {
+    const bounds = map.getBounds()
+    const sw = bounds.getSouthWest()
+    const ne = bounds.getNorthEast()
+
+    try {
+      const spots = await getTouristSpots({
+        swLat: sw.getLat(),
+        swLng: sw.getLng(),
+        neLat: ne.getLat(),
+        neLng: ne.getLng(),
+      })
+      setTouristSpots(spots)
+      setHasFetchedTouristSpots(true)
+    } catch (err) {
+      console.error('관광지 불러오기 실패:', err)
+    }
+  }
 
   useEffect(() => {
     if (selectedAccidentId) {
@@ -72,36 +93,39 @@ const KakaoMap = ({
     })
   }, [])
 
-  const selectedAccidentInfo =
-    selectedRegionId === 'GJ-Hwangnam' ? regionAccidentInfo.accidents : []
-
   return (
     <Map
+      ref={mapRef}
       center={mapCenter}
       style={{ width: '100%', height: '100%' }}
       className='flex-3'
       level={mapLevel}
       onZoomChanged={handleZoomChanged}
       onCenterChanged={handleCenterChanged}
+      onCreate={(map) => {
+        mapRef.current = map
+        if (map.getLevel() === 7) {
+          fetchTouristSpots(map)
+        }
+      }}
     >
       {!selectedAccidentId &&
-        mapRegionLabels.map((regionLabel) => (
+        touristSpots.map((touristSpot) => (
           <CustomOverlayMap
-            key={regionLabel.id}
-            position={regionLabel.center}
+            key={touristSpot.EMD_CD}
+            position={{ lat: touristSpot.latitude, lng: touristSpot.longitude }}
             yAnchor={1}
-            zIndex={10 + regionLabel.level}
           >
             <MapRegionLabel
-              mapRegionLabel={regionLabel}
-              onSelect={() => handleRegionSelect(regionLabel.id)}
+              regionLabel={touristSpot.name}
+              accidentCount={touristSpot.totalAccident}
+              onSelect={() => handleRegionSelect(touristSpot.EMD_CD)}
             />
           </CustomOverlayMap>
         ))}
 
-      {selectedAccidentId &&
-        selectedRegionId === 'GJ-Hwangnam' &&
-        selectedAccidentInfo.map((accidentInfo) => (
+      {/* {selectedAccidentId &&
+        touristSpots.map((accidentInfo) => (
           <CustomOverlayMap key={accidentInfo.id} position={accidentInfo.point}>
             {selectedAccidentId === accidentInfo.id ? (
               <AccidentSelectedPin accidentCount={accidentInfo.accidentCount} />
@@ -112,7 +136,7 @@ const KakaoMap = ({
               />
             )}
           </CustomOverlayMap>
-        ))}
+        ))} */}
     </Map>
   )
 }
