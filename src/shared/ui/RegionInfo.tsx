@@ -1,6 +1,6 @@
-import type { RegionAccidentInfo } from '../types/map_mocks'
+import type { RegionInfo } from '../types/map'
 
-const RegionInfo = ({ accidentInfo }: { accidentInfo: RegionAccidentInfo | null }) => {
+const RegionInfo = ({ accidentInfo }: { accidentInfo: RegionInfo | null }) => {
   return (
     <div className='flex justify-between items-center'>
       <div className='rounded-full bg-gray-1 text-white m1 min-w-[66px] py-[2px] px-[17px] text-center'>

@@ -1,6 +1,8 @@
 import { RegionInfo, AccidentInfoCard } from './'
-import { regionAccidentInfo } from '../mocks'
 import Alert from '../../assets/alert.svg?react'
+import { getRegionInfo } from '../../pages/search-page/api/tourlistSpot'
+import { useEffect, useState } from 'react'
+import type { RegionInfo as RegionInfoType } from '../types/map'
 
 interface SideBarProps {
   selectedRegionId: string | null
@@ -15,8 +17,26 @@ const SideBar = ({
   onAccidentCardClick,
   search,
 }: SideBarProps) => {
-  const accidentInfo =
-    selectedRegionId === 'GJ-Hwangnam' || search === '황남동' ? regionAccidentInfo : null
+  const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
+
+  useEffect(() => {
+    const fetchRegionInfo = async () => {
+      if (!selectedRegionId) {
+        setAccidentInfo(null)
+        return
+      }
+
+      try {
+        const data = await getRegionInfo({ regionId: selectedRegionId })
+        setAccidentInfo(data)
+      } catch (err) {
+        console.error('지역 라벨 정보 불러오기 실패:', err)
+        setAccidentInfo(null)
+      }
+    }
+
+    fetchRegionInfo()
+  }, [selectedRegionId])
 
   return (
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>

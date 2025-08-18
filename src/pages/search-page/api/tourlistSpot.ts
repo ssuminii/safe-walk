@@ -8,6 +8,7 @@ interface GetTouristSpotsParams {
   neLng: number
 }
 
+// 지도 영역 법정동 조회
 export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: GetTouristSpotsParams): Promise<RegionLabels[]> => {
   const response = await apiClient.get<RegionLabels[]>('/emd', {
     params: { swLat, swLng, neLat, neLng },
@@ -15,3 +16,8 @@ export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: GetTourist
   return response.data
 }
 
+// 법정동 상세 조회
+export const getRegionInfo = async ({ regionId }: {regionId: string}) => {
+  const response = await apiClient.get(`/emd/${regionId}`)
+  return response.data
+}

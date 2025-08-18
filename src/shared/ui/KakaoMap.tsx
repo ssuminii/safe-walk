@@ -70,7 +70,7 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
       })
       setRegionLabels(spots)
     } catch (err) {
-      console.error('관광지 불러오기 실패:', err)
+      console.error('지역 라벨 정보 불러오기 실패:', err)
     }
   }
 
