@@ -60,8 +60,8 @@ const KakaoMap = ({
     if (searchMapCenter && mapRef.current) {
       setIsSearchMove(true)
       setMapCenter(searchMapCenter)
-
       fetchRegionLabels(mapRef.current)
+      setMapLevel(7)
     }
   }, [searchMapCenter])
 
@@ -134,7 +134,8 @@ const KakaoMap = ({
         }
       }}
     >
-      {regionLabels.length > 0 &&
+      {!selectedAccidentId &&
+        regionLabels.length > 0 &&
         regionLabels.map((regionLabel) => (
           <CustomOverlayMap
             key={regionLabel.EMD_CD}
