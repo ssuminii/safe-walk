@@ -1,5 +1,4 @@
-import { AccidentInfoCard, RegionInfo } from './'
-import Alert from '../../assets/alert.svg?react'
+import { AccidentInfoCard, RegionInfo, EmptyState } from './'
 import { getRegionInfo } from '../../pages/search-page/api/tourlistSpot'
 import { useEffect, useState } from 'react'
 import type { RegionInfoType } from '../types/map'
@@ -33,10 +32,14 @@ const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: 
     fetchRegionInfo()
   }, [selectedRegionId])
 
+  const isEmpty = !accidentInfo || accidentInfo.totalAccident === 0
+
   return (
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>
       <RegionInfo accidentInfo={accidentInfo} />
-      {accidentInfo ? (
+      {isEmpty ? (
+        <EmptyState />
+      ) : (
         accidentInfo.accidents.map((accident) => (
           <AccidentInfoCard
             key={accident.id}
@@ -45,13 +48,6 @@ const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: 
             onClick={() => onAccidentCardClick(accident.id)}
           />
         ))
-      ) : (
-        <div className='flex flex-col justify-center items-center gap-3 h-full'>
-          <Alert />
-          <p className='text-center r2 text-gray-1'>
-            해당 위치에는 사고 데이터가 없습니다. <br /> 위치를 변경하여 확인해보세요.
-          </p>
-        </div>
       )}
     </div>
   )
