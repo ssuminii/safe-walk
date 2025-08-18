@@ -26,6 +26,7 @@ const KakaoMap = ({
   const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
   const [targetAccident, setTargetAccident] = useState<Accident>()
   const mapRef = useRef<kakao.maps.Map | null>(null)
+  const [isSearchMove, setIsSearchMove] = useState(false)
   const hasInitializedMapRef = useRef(false)
 
   const handleRegionSelect = useCallback(
@@ -57,6 +58,7 @@ const KakaoMap = ({
 
   useEffect(() => {
     if (searchMapCenter && mapRef.current) {
+      setIsSearchMove(true)
       setMapCenter(searchMapCenter)
 
       fetchRegionLabels(mapRef.current)
@@ -97,15 +99,21 @@ const KakaoMap = ({
     }
   }, [selectedAccidentId, targetAccident])
 
-  const handleCenterChanged = useCallback((map: kakao.maps.Map) => {
-    const center = map.getCenter()
-    setMapCenter({
-      lat: center.getLat(),
-      lng: center.getLng(),
-    })
+  const handleCenterChanged = useCallback(
+    (map: kakao.maps.Map) => {
+      const center = map.getCenter()
+      setMapCenter({
+        lat: center.getLat(),
+        lng: center.getLng(),
+      })
 
-    fetchRegionLabels(map)
-  }, [])
+      if (isSearchMove) {
+        fetchRegionLabels(map)
+        setIsSearchMove(false)
+      }
+    },
+    [isSearchMove]
+  )
 
   return (
     <Map
