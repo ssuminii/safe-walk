@@ -11,12 +11,7 @@ interface SideBarProps {
   search: string
 }
 
-const SideBar = ({
-  selectedRegionId,
-  selectedAccidentId,
-  onAccidentCardClick,
-  search,
-}: SideBarProps) => {
+const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
   const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
 
   useEffect(() => {

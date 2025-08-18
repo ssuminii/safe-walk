@@ -13,7 +13,7 @@ interface KakaoMapProps {
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
 
-const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: KakaoMapProps) => {
+const KakaoMap = ({ onSelectRegion, selectedAccidentId }: KakaoMapProps) => {
   // const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
