@@ -6,7 +6,7 @@ export interface RegionLabels {
   longitude: number
 }
 
-export interface RegionInfo {
+export interface RegionInfoType {
   name: string
   totalAccident: number
   accidents: [{

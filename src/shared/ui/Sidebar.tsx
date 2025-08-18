@@ -1,8 +1,8 @@
-import { RegionInfo, AccidentInfoCard } from './'
+import { AccidentInfoCard, RegionInfo } from './'
 import Alert from '../../assets/alert.svg?react'
 import { getRegionInfo } from '../../pages/search-page/api/tourlistSpot'
 import { useEffect, useState } from 'react'
-import type { RegionInfo as RegionInfoType } from '../types/map'
+import type { RegionInfoType } from '../types/map'
 
 interface SideBarProps {
   selectedRegionId: string | null
