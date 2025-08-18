@@ -1,37 +1,13 @@
 import { AccidentInfoCard, RegionInfo, EmptyState } from './'
-import { getRegionInfo } from '../../pages/search-page/api/tourlistSpot'
-import { useEffect, useState } from 'react'
 import type { RegionInfoType } from '../types/map'
 
 interface SideBarProps {
-  selectedRegionId: string | null
+  accidentInfo: RegionInfoType | null
   selectedAccidentId: string | null
   onAccidentCardClick: (accidentId: string) => void
-  search: string
 }
 
-const SideBar = ({ selectedRegionId, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
-  const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
-
-  useEffect(() => {
-    const fetchRegionInfo = async () => {
-      if (!selectedRegionId) {
-        setAccidentInfo(null)
-        return
-      }
-
-      try {
-        const data = await getRegionInfo({ regionId: selectedRegionId })
-        setAccidentInfo(data)
-      } catch (err) {
-        console.error('지역 라벨 정보 불러오기 실패:', err)
-        setAccidentInfo(null)
-      }
-    }
-
-    fetchRegionInfo()
-  }, [selectedRegionId])
-
+const SideBar = ({ accidentInfo, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
   const isEmpty = !accidentInfo || accidentInfo.totalAccident === 0
 
   return (
