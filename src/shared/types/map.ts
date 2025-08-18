@@ -29,3 +29,15 @@ export interface Accident {
     lng: number
 }
 }
+
+export interface EmnSearchResult {
+  id: number
+  code: string 
+  sido: string
+  sigungu: string
+  eupMyeonDong: string
+  subLevel: string
+  latitude: number
+  longitude: number
+  codeType: string
+}

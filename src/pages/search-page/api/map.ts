@@ -1,5 +1,5 @@
 import { apiClient } from '../../../shared/lib/apiClient'
-import type { RegionLabels } from '../../../shared/types/map'
+import type { EmnSearchResult, RegionLabels } from '../../../shared/types/map'
 
 interface GetTouristSpotsParams {
   swLat: number
@@ -19,5 +19,13 @@ export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: GetTourist
 // 법정동 상세 조회
 export const getRegionInfo = async ({ regionId }: {regionId: string}) => {
   const response = await apiClient.get(`/emd/${regionId}`)
+  return response.data
+}
+
+// 단일 검색 조회
+export const searchRegionInfoByName = async (name: string): Promise<EmnSearchResult[]> => {
+  const response = await apiClient.get<EmnSearchResult[]>('/emd/search/name', {
+    params: { name },
+  })
   return response.data
 }

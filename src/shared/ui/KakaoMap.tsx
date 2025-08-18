@@ -2,7 +2,7 @@ import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
 import type { RegionInfoType, RegionLabels, Accident } from '../types/map'
 import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { getRegionLabels } from '../../pages/search-page/api/tourlistSpot'
+import { getRegionLabels } from '../../pages/search-page/api/map'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -29,7 +29,6 @@ const KakaoMap = ({
   const handleRegionSelect = useCallback(
     (regionId: string) => {
       onSelectRegion(regionId)
-      console.log('regionId', regionId)
     },
     [onSelectRegion]
   )
@@ -72,6 +71,7 @@ const KakaoMap = ({
     }
   }
 
+  // 사이드바에서 선택된 사고와 일치되는 위치 설정
   useEffect(() => {
     if (selectedAccidentId) {
       const targetAccidentId = accidentInfo?.accidents.find(
