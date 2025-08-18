@@ -9,20 +9,23 @@ export interface RegionLabels {
 export interface RegionInfoType {
   name: string
   totalAccident: number
-  accidents: [{
-    id: string
-    location: string
-    accidentCount: number
-    casualties: {
-      total: number
-      dead: number
-      severe: number
-      minor: number
-    }
-    point: {
-      lat: number
-      lng: number
-    }
-  }]
+  accidents: Accident[]
   emd_CD: string
+}
+
+
+export interface Accident {
+  id: string
+  location: string
+  accidentCount: number
+  casualties: {
+    total: number
+    dead: number
+    severe: number
+    minor: number
+  }
+  point: {
+    lat: number
+    lng: number
+}
 }

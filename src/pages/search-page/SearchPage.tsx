@@ -45,6 +45,7 @@ const SearchPage = () => {
         onAccidentCardClick={handleAccidentSelect}
       />
       <KakaoMap
+        accidentInfo={accidentInfo}
         onSelectRegion={setSelectedRegionId}
         selectedAccidentId={selectedAccidentId}
         onSelectAccident={setSelectedAccidentId}
