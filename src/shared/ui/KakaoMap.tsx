@@ -14,17 +14,19 @@ interface KakaoMapProps {
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
 
 const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: KakaoMapProps) => {
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
+  // const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
   const [touristSpots, setTouristSpots] = useState<Emd[]>([])
-  const [hasFetchedTouristSpots, setHasFetchedTouristSpots] = useState(false)
+  // const [hasFetchedTouristSpots, setHasFetchedTouristSpots] = useState(false)
   const mapRef = useRef<kakao.maps.Map | null>(null)
+  const hasInitializedMapRef = useRef(false)
 
   const handleRegionSelect = useCallback(
     (regionId: string) => {
-      setSelectedRegionId(regionId)
+      // setSelectedRegionId(regionId)
       onSelectRegion(regionId)
+      console.log('regionId', regionId)
     },
     [onSelectRegion]
   )
@@ -36,23 +38,23 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
   //   [onSelectAccident]
   // )
 
-  const handleZoomChanged = useCallback(
-    (map: kakao.maps.Map) => {
-      const currentLevel = map.getLevel()
-      setMapLevel(currentLevel)
+  // const handleZoomChanged = useCallback(
+  //   (map: kakao.maps.Map) => {
+  //     const currentLevel = map.getLevel()
+  //     setMapLevel(currentLevel)
 
-      if (currentLevel >= 7 && selectedRegionId) {
-        setSelectedRegionId(null)
-        onSelectRegion(null)
-        onSelectAccident(null)
-      }
+  //     if (currentLevel >= 7 && selectedRegionId) {
+  //       setSelectedRegionId(null)
+  //       onSelectRegion(null)
+  //       onSelectAccident(null)
+  //     }
 
-      if (currentLevel === 7 && !hasFetchedTouristSpots) {
-        fetchTouristSpots(map)
-      }
-    },
-    [selectedRegionId, onSelectRegion, onSelectAccident, hasFetchedTouristSpots]
-  )
+  //     if (currentLevel === 7 && !hasFetchedTouristSpots) {
+  //       fetchTouristSpots(map)
+  //     }
+  //   },
+  //   [selectedRegionId, onSelectRegion, onSelectAccident, hasFetchedTouristSpots]
+  // )
 
   const fetchTouristSpots = async (map: kakao.maps.Map) => {
     const bounds = map.getBounds()
@@ -67,7 +69,7 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
         neLng: ne.getLng(),
       })
       setTouristSpots(spots)
-      setHasFetchedTouristSpots(true)
+      // setHasFetchedTouristSpots(true)
     } catch (err) {
       console.error('관광지 불러오기 실패:', err)
     }
@@ -100,9 +102,12 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
       style={{ width: '100%', height: '100%' }}
       className='flex-3'
       level={mapLevel}
-      onZoomChanged={handleZoomChanged}
+      // onZoomChanged={handleZoomChanged}
       onCenterChanged={handleCenterChanged}
       onCreate={(map) => {
+        if (hasInitializedMapRef.current) return
+        hasInitializedMapRef.current = true
+
         mapRef.current = map
         if (map.getLevel() === 7) {
           fetchTouristSpots(map)
