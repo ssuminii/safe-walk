@@ -1,4 +1,4 @@
-import type { AccidentInfoCard as Accident } from '../types/map'
+import type { AccidentInfoCard as Accident } from '../types/map_mocks'
 
 interface AccidentInfoCardProps {
   accident: Accident

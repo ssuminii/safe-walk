@@ -1,4 +1,4 @@
-import type { RegionAccidentInfo } from '../types/map'
+import type { RegionAccidentInfo } from '../types/map_mocks'
 
 export const regionAccidentInfo: RegionAccidentInfo = {
   totalAccident: 3, 

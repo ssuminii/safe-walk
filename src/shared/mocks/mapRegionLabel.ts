@@ -1,4 +1,4 @@
-import type { mapRegionLabel } from '../types/map'
+import type { mapRegionLabel } from '../types/map_mocks'
 
 export const mapRegionLabels: mapRegionLabel[] = [
   { id: 'GJ-Hwangnam', gu: '경주시', name: '황남동', center: { lat: 35.8335, lng: 129.2125 }, level: 2, accidentCount: 9 },

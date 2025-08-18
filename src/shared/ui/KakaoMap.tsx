@@ -1,9 +1,9 @@
 import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
-import type { Emd } from '../types/map'
+import type { RegionLabels } from '../types/map'
 import { MapRegionLabel } from './'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { regionAccidentInfo } from '../mocks'
-import { getTouristSpots } from '../../pages/search-page/api/tourlistSpot'
+import { getRegionLabels } from '../../pages/search-page/api/tourlistSpot'
 
 interface KakaoMapProps {
   onSelectRegion: (regionId: string | null) => void
@@ -17,8 +17,7 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
   // const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
-  const [touristSpots, setTouristSpots] = useState<Emd[]>([])
-  // const [hasFetchedTouristSpots, setHasFetchedTouristSpots] = useState(false)
+  const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
   const mapRef = useRef<kakao.maps.Map | null>(null)
   const hasInitializedMapRef = useRef(false)
 
@@ -27,6 +26,7 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
       // setSelectedRegionId(regionId)
       onSelectRegion(regionId)
       console.log('regionId', regionId)
+      console.log()
     },
     [onSelectRegion]
   )
@@ -56,20 +56,19 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
   //   [selectedRegionId, onSelectRegion, onSelectAccident, hasFetchedTouristSpots]
   // )
 
-  const fetchTouristSpots = async (map: kakao.maps.Map) => {
+  const fetchRegionLabels = async (map: kakao.maps.Map) => {
     const bounds = map.getBounds()
     const sw = bounds.getSouthWest()
     const ne = bounds.getNorthEast()
 
     try {
-      const spots = await getTouristSpots({
+      const spots = await getRegionLabels({
         swLat: sw.getLat(),
         swLng: sw.getLng(),
         neLat: ne.getLat(),
         neLng: ne.getLng(),
       })
-      setTouristSpots(spots)
-      // setHasFetchedTouristSpots(true)
+      setRegionLabels(spots)
     } catch (err) {
       console.error('관광지 불러오기 실패:', err)
     }
@@ -110,21 +109,21 @@ const KakaoMap = ({ onSelectRegion, selectedAccidentId, onSelectAccident }: Kaka
 
         mapRef.current = map
         if (map.getLevel() === 7) {
-          fetchTouristSpots(map)
+          fetchRegionLabels(map)
         }
       }}
     >
       {!selectedAccidentId &&
-        touristSpots.map((touristSpot) => (
+        regionLabels.map((regionLabel) => (
           <CustomOverlayMap
-            key={touristSpot.EMD_CD}
-            position={{ lat: touristSpot.latitude, lng: touristSpot.longitude }}
+            key={regionLabel.EMD_CD}
+            position={{ lat: regionLabel.latitude, lng: regionLabel.longitude }}
             yAnchor={1}
           >
             <MapRegionLabel
-              regionLabel={touristSpot.name}
-              accidentCount={touristSpot.totalAccident}
-              onSelect={() => handleRegionSelect(touristSpot.EMD_CD)}
+              regionLabel={regionLabel.name}
+              accidentCount={regionLabel.totalAccident}
+              onSelect={() => handleRegionSelect(regionLabel.EMD_CD)}
             />
           </CustomOverlayMap>
         ))}

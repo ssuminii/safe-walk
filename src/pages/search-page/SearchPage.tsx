@@ -12,6 +12,8 @@ const SearchPage = () => {
     setSelectedAccidentId(accidentId)
   }
 
+  console.log('선택된 ID', selectedRegionId)
+
   return (
     <div className='flex flex-1'>
       <SideBar

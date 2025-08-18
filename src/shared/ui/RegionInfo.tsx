@@ -1,4 +1,4 @@
-import type { RegionAccidentInfo } from '../types/map'
+import type { RegionAccidentInfo } from '../types/map_mocks'
 
 const RegionInfo = ({ accidentInfo }: { accidentInfo: RegionAccidentInfo | null }) => {
   return (

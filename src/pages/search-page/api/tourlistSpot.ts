@@ -1,5 +1,5 @@
 import { apiClient } from '../../../shared/lib/apiClient'
-import type { Emd } from '../../../shared/types/map'
+import type { RegionLabels } from '../../../shared/types/map'
 
 interface GetTouristSpotsParams {
   swLat: number
@@ -8,9 +8,10 @@ interface GetTouristSpotsParams {
   neLng: number
 }
 
-export const getTouristSpots = async ({ swLat, swLng, neLat, neLng }: GetTouristSpotsParams): Promise<Emd[]> => {
-  const response = await apiClient.get<Emd[]>('/emd', {
+export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: GetTouristSpotsParams): Promise<RegionLabels[]> => {
+  const response = await apiClient.get<RegionLabels[]>('/emd', {
     params: { swLat, swLng, neLat, neLng },
   })
   return response.data
 }
+
