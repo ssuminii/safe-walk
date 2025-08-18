@@ -10,6 +10,7 @@ const SearchPage = () => {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const [selectedAccidentId, setSelectedAccidentId] = useState<string | null>(null)
   const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
+  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
   const query = searchParams.get('q')
 
   const handleAccidentSelect = (accidentId: string) => {
@@ -50,6 +51,7 @@ const SearchPage = () => {
         if (result) {
           const region = result[0]
           setSelectedRegionId(region.code)
+          setMapCenter({ lat: region.latitude, lng: region.longitude })
         }
       } catch (err) {
         console.error('단일 검색 실패:', err)
@@ -72,6 +74,7 @@ const SearchPage = () => {
         onSelectRegion={setSelectedRegionId}
         selectedAccidentId={selectedAccidentId}
         onSelectAccident={setSelectedAccidentId}
+        searchMapCenter={mapCenter}
       />
     </div>
   )

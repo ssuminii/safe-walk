@@ -9,6 +9,7 @@ interface KakaoMapProps {
   onSelectRegion: (regionId: string | null) => void
   selectedAccidentId: string | null
   onSelectAccident: (accidentId: string | null) => void
+  searchMapCenter: { lat: number; lng: number } | null
 }
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
@@ -18,8 +19,9 @@ const KakaoMap = ({
   onSelectRegion,
   selectedAccidentId,
   onSelectAccident,
+  searchMapCenter,
 }: KakaoMapProps) => {
-  const [mapCenter, setMapCenter] = useState(HWANGNIDANGIL)
+  const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
   const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
   const [targetAccident, setTargetAccident] = useState<Accident>()
@@ -52,6 +54,14 @@ const KakaoMap = ({
     },
     [onSelectRegion, onSelectAccident]
   )
+
+  useEffect(() => {
+    if (searchMapCenter && mapRef.current) {
+      setMapCenter(searchMapCenter)
+
+      fetchRegionLabels(mapRef.current)
+    }
+  }, [searchMapCenter])
 
   const fetchRegionLabels = async (map: kakao.maps.Map) => {
     const bounds = map.getBounds()
@@ -93,6 +103,8 @@ const KakaoMap = ({
       lat: center.getLat(),
       lng: center.getLng(),
     })
+
+    fetchRegionLabels(map)
   }, [])
 
   return (
@@ -114,7 +126,7 @@ const KakaoMap = ({
         }
       }}
     >
-      {!selectedAccidentId &&
+      {regionLabels.length > 0 &&
         regionLabels.map((regionLabel) => (
           <CustomOverlayMap
             key={regionLabel.EMD_CD}
