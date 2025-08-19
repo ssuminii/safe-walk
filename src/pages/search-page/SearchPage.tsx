@@ -79,6 +79,7 @@ const SearchPage = () => {
         onSelectAccident={setSelectedAccidentId}
         searchMapCenter={mapCenter}
         onAccidentListChange={setAccidentList}
+        searchedRegionId={selectedRegionId}
       />
     </div>
   )

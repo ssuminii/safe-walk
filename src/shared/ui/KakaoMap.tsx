@@ -13,6 +13,7 @@ interface KakaoMapProps {
   onSelectAccident: (accidentId: string | null) => void
   searchMapCenter: { lat: number; lng: number } | null
   onAccidentListChange: (list: RegionInfoType[]) => void
+  searchedRegionId?: string | null
 }
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
@@ -24,6 +25,7 @@ const KakaoMap = ({
   onSelectAccident,
   searchMapCenter,
   onAccidentListChange,
+  searchedRegionId,
 }: KakaoMapProps) => {
   const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
@@ -69,6 +71,12 @@ const KakaoMap = ({
           polygon.properties?.EMD_CD === selectedRegionId || polygon.id === selectedRegionId
       )
     : []
+
+  useEffect(() => {
+    if (searchedRegionId) {
+      setSelectedRegionId(searchedRegionId) // ✅ 내부 상태 업데이트
+    }
+  }, [searchedRegionId])
 
   // 지역 라벨 선택
   const handleRegionSelect = useCallback(
@@ -121,6 +129,8 @@ const KakaoMap = ({
 
     map.setCenter(targetLatLng)
     map.setLevel(7)
+
+    setSelectedRegionId(searchedRegionId ?? '')
 
     fetchRegionLabels(map)
     updateBoundsParams(map)
