@@ -12,6 +12,7 @@ interface KakaoMapProps {
   selectedAccidentId: string | null
   onSelectAccident: (accidentId: string | null) => void
   searchMapCenter: { lat: number; lng: number } | null
+  onAccidentListChange: (list: RegionInfoType[]) => void
 }
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
@@ -22,6 +23,7 @@ const KakaoMap = ({
   selectedAccidentId,
   onSelectAccident,
   searchMapCenter,
+  onAccidentListChange,
 }: KakaoMapProps) => {
   const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
@@ -31,7 +33,7 @@ const KakaoMap = ({
   const [isSearchMove, setIsSearchMove] = useState(false)
   const hasInitializedMapRef = useRef(false)
 
-  const [accidentList, setAccidentList] = useState<RegionInfoType[]>()
+  const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
 
   const { getPolygonByEmdCode } = usePolygonLoader()
 
@@ -103,8 +105,10 @@ const KakaoMap = ({
   useEffect(() => {
     if (mapLevel < 5 && regionAccidentList.length > 0) {
       setAccidentList(regionAccidentList)
+      onAccidentListChange(regionAccidentList) // ✅ 부모에 전달
     } else {
-      setAccidentList([]) // 확대 안 됐으면 초기화
+      setAccidentList([])
+      onAccidentListChange([]) // ✅ 확대하면 초기화
     }
   }, [regionAccidentList, mapLevel])
 

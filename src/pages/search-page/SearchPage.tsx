@@ -13,6 +13,8 @@ const SearchPage = () => {
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
   const query = searchParams.get('q')
 
+  const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
+
   const handleAccidentSelect = (accidentId: string) => {
     setSelectedAccidentId(accidentId)
   }
@@ -68,6 +70,7 @@ const SearchPage = () => {
         accidentInfo={accidentInfo}
         selectedAccidentId={selectedAccidentId}
         onAccidentCardClick={handleAccidentSelect}
+        accidentList={accidentList}
       />
       <KakaoMap
         accidentInfo={accidentInfo}
@@ -75,6 +78,7 @@ const SearchPage = () => {
         selectedAccidentId={selectedAccidentId}
         onSelectAccident={setSelectedAccidentId}
         searchMapCenter={mapCenter}
+        onAccidentListChange={setAccidentList}
       />
     </div>
   )

@@ -5,10 +5,24 @@ interface SideBarProps {
   accidentInfo: RegionInfoType | null
   selectedAccidentId: string | null
   onAccidentCardClick: (accidentId: string) => void
+  accidentList: RegionInfoType[]
 }
 
-const SideBar = ({ accidentInfo, selectedAccidentId, onAccidentCardClick }: SideBarProps) => {
-  const isEmpty = !accidentInfo || accidentInfo.totalAccident === 0
+const SideBar = ({
+  accidentInfo,
+  selectedAccidentId,
+  onAccidentCardClick,
+  accidentList,
+}: SideBarProps) => {
+  const accidentData = accidentInfo
+    ? accidentInfo.accidents
+    : accidentList.flatMap((region) => region.accidents ?? []).filter(Boolean)
+
+  console.log(accidentData)
+
+  const isEmpty =
+    (accidentInfo && accidentInfo.totalAccident === 0) ||
+    (!accidentInfo && accidentData.length === 0)
 
   return (
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px] h-full overflow-y-auto'>
@@ -16,7 +30,7 @@ const SideBar = ({ accidentInfo, selectedAccidentId, onAccidentCardClick }: Side
       {isEmpty ? (
         <EmptyState />
       ) : (
-        accidentInfo.accidents.map((accident) => (
+        accidentData.map((accident) => (
           <AccidentInfoCard
             key={accident.id}
             accident={accident}
