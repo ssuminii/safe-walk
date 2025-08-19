@@ -34,7 +34,7 @@ const SideBar = ({
   }, [selectedAccidentId])
 
   return (
-    <div className='flex flex-col flex-1 py-4 px-6 gap-[18px] h-dvh overflow-y-auto'>
+    <div className='flex flex-col flex-1 py-4 px-6 gap-[18px] h-full overflow-y-auto'>
       <RegionInfo accidentInfo={accidentInfo} />
       {isEmpty ? (
         <EmptyState />
