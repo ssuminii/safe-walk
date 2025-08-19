@@ -19,10 +19,6 @@ const SearchPage = () => {
     setSelectedAccidentId(accidentId)
   }
 
-  console.log('선택된 ID', selectedRegionId)
-  console.log('지역 상세 사고 정보 개별 조회', selectedAccidentId)
-  console.log('현재 쿼리:', query)
-
   // 법정동 상세 조회
   useEffect(() => {
     const fetchRegionInfo = async () => {

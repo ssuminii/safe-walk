@@ -10,7 +10,6 @@ interface RegionPolygonProps {
 
 const RegionPolygon = ({ polygon, map }: RegionPolygonProps) => {
   const accidentCount = polygon.properties.totalAccident ?? 0
-  console.log('지도 영역 사고 수 ', accidentCount)
   const level = getLevel(accidentCount)
 
   let fillColor = '#326CF9'
@@ -42,19 +41,13 @@ const RegionPolygon = ({ polygon, map }: RegionPolygonProps) => {
     const x = firstCoord[0]
     const y = firstCoord[1]
 
-    // console.log('원본 좌표:', { x, y })
-
     let convertedCoords: number[][] = []
 
-    // WGS84 경위도인지 확인 (한국 범위)
     if (x >= 125 && x <= 132 && y >= 33 && y <= 39) {
-      // console.log('이미 WGS84 경위도 좌표')
       convertedCoords = polygon.geometry.coordinates[0]
     }
     // 투영좌표계인 경우 변환 시도
     else {
-      // console.log('투영좌표계 → WGS84 변환 시도')
-
       // 좌표 범위로 어떤 투영좌표계인지 추정
       let sourceProj = projections.UTM_K
 
@@ -66,12 +59,9 @@ const RegionPolygon = ({ polygon, map }: RegionPolygonProps) => {
         sourceProj = projections.UTM_K
       }
 
-      // console.log('추정 좌표계:', sourceProj)
-
       try {
         convertedCoords = polygon.geometry.coordinates[0].map(([x, y]) => {
           const [lng, lat] = proj4(sourceProj, projections.WGS84, [x, y])
-          // console.log(`변환: [${x}, ${y}] → [${lng}, ${lat}]`)
           return [lng, lat]
         })
       } catch (error) {

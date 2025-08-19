@@ -18,8 +18,6 @@ const SideBar = ({
     ? accidentInfo.accidents
     : accidentList.flatMap((region) => region.accidents ?? []).filter(Boolean)
 
-  console.log(accidentData)
-
   const isEmpty =
     (accidentInfo && accidentInfo.totalAccident === 0) ||
     (!accidentInfo && accidentData.length === 0)

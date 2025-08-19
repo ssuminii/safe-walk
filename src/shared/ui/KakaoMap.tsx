@@ -72,19 +72,13 @@ const KakaoMap = ({
       )
     : []
 
-  useEffect(() => {
-    if (searchedRegionId) {
-      setSelectedRegionId(searchedRegionId) // ✅ 내부 상태 업데이트
-    }
-  }, [searchedRegionId])
-
   // 지역 라벨 선택
   const handleRegionSelect = useCallback(
     async (regionId: string) => {
       setSelectedRegionId(regionId)
       onSelectRegion(regionId)
     },
-    [onSelectRegion, getPolygonByEmdCode, setSelectedRegionId]
+    [onSelectRegion, setSelectedRegionId]
   )
 
   // 사고 핀 클릭
