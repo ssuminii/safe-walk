@@ -1,8 +1,10 @@
 import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
 import type { RegionInfoType, RegionLabels, Accident } from '../types/map'
-import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
+import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from './'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getRegionLabels } from '../../pages/search-page/api/map'
+import { usePolygonLoader } from '../hooks/usePolygonLoader'
+import { usePolygonLoaderQuery } from '../hooks/usePolygonLoaderQuery'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -25,15 +27,52 @@ const KakaoMap = ({
   const [mapLevel, setMapLevel] = useState(7)
   const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
   const [targetAccident, setTargetAccident] = useState<Accident>()
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const mapRef = useRef<kakao.maps.Map | null>(null)
   const [isSearchMove, setIsSearchMove] = useState(false)
   const hasInitializedMapRef = useRef(false)
 
+  const { getPolygonByEmdCode } = usePolygonLoader()
+
+  const [boundsParams, setBoundsParams] = useState<{
+    swLat: number
+    swLng: number
+    neLat: number
+    neLng: number
+  } | null>(null)
+
+  const { data: allPolygons = [] } = usePolygonLoaderQuery(
+    boundsParams ?? {
+      swLat: 0,
+      swLng: 0,
+      neLat: 0,
+      neLng: 0,
+    }
+  )
+
+  // 선택된 지역 영역
+  const selectedPolygons = selectedRegionId
+    ? allPolygons.filter(
+        (polygon) =>
+          polygon.properties?.EMD_CD === selectedRegionId || polygon.id === selectedRegionId
+      )
+    : []
+
   const handleRegionSelect = useCallback(
-    (regionId: string) => {
+    async (regionId: string) => {
+      // console.log('지역 선택:', regionId)
+
+      // 선택된 지역 ID 저장
+      setSelectedRegionId(regionId)
       onSelectRegion(regionId)
+
+      // 개별 폴리곤도 가져오기 (혹시 allPolygons에 없을 경우 대비)
+      // const polygon = await getPolygonByEmdCode(regionId)
+      // if (polygon) {
+      //   console.log('개별 polygon 로드:', polygon)
+      // }
     },
-    [onSelectRegion]
+    [onSelectRegion, getPolygonByEmdCode]
   )
 
   const handleAccidentPinClick = useCallback(
@@ -61,6 +100,7 @@ const KakaoMap = ({
       setIsSearchMove(true)
       setMapCenter(searchMapCenter)
       fetchRegionLabels(mapRef.current)
+      updateBoundsParams(mapRef.current)
       setMapLevel(7)
     }
   }, [searchMapCenter])
@@ -81,6 +121,20 @@ const KakaoMap = ({
     } catch (err) {
       console.error('지역 라벨 정보 불러오기 실패:', err)
     }
+  }
+
+  // polygon
+  const updateBoundsParams = (map: kakao.maps.Map) => {
+    const bounds = map.getBounds()
+    const sw = bounds.getSouthWest()
+    const ne = bounds.getNorthEast()
+
+    setBoundsParams({
+      swLat: sw.getLat(),
+      swLng: sw.getLng(),
+      neLat: ne.getLat(),
+      neLng: ne.getLng(),
+    })
   }
 
   // 사이드바에서 선택된 사고와 일치되는 위치 설정
@@ -109,6 +163,7 @@ const KakaoMap = ({
 
       if (isSearchMove) {
         fetchRegionLabels(map)
+        updateBoundsParams(map)
         setIsSearchMove(false)
       }
     },
@@ -129,11 +184,18 @@ const KakaoMap = ({
         hasInitializedMapRef.current = true
 
         mapRef.current = map
-        if (map.getLevel() === 7) {
+        if (map.getLevel() >= 6) {
           fetchRegionLabels(map)
+          updateBoundsParams(map)
         }
       }}
     >
+      {selectedPolygons.map((polygon) =>
+        mapRef.current ? (
+          <RegionPolygon key={polygon.id} polygon={polygon} map={mapRef.current} />
+        ) : null
+      )}
+
       {!selectedAccidentId &&
         regionLabels.length > 0 &&
         regionLabels.map((regionLabel) => (

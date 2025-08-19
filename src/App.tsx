@@ -1,5 +1,6 @@
 import { Navbar } from './shared/ui'
 import { SearchPage } from './pages/search-page'
+import './shared/lib/proj4Defs'
 
 function App() {
   return (

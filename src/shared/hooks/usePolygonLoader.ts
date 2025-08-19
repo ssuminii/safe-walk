@@ -18,45 +18,40 @@ export const usePolygonLoader = () => {
       console.error(`Unknown region code: ${regionCode}`);
       return null;
     }
-
+    
     const regionData = await getRegionPolygon(regionKey);
     if (!regionData) return null;
 
-    return regionData.features.find(feature => feature.properties.EMD_CD === emdCode) || null;
+    return regionData.features.find(feature => feature.properties.EMD_CD === emdCode) || null
   }, []);
 
-
-
   // 경계 내 polygon들 가져오기
-const getPolygonsInBounds = useCallback(async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<PolygonFeature[]> => {
-  try {
-    const emdList = await getRegionLabels({ swLat, swLng, neLat, neLng });
-    
-    if (!Array.isArray(emdList) || emdList.length === 0) {
+  const getPolygonsInBounds = useCallback(async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<PolygonFeature[]> => {
+    try {
+      const emdList = await getRegionLabels({ swLat, swLng, neLat, neLng });
+      
+      if (!Array.isArray(emdList) || emdList.length === 0) {
+        return [];
+      }
+
+      const emdCodes = emdList.map((emd) => emd.EMD_CD);
+      // console.log('EMD_CD 목록:', emdCodes);
+
+      // 각 EMD_CD에 대해 polygon 가져오기
+      const polygons: PolygonFeature[] = [];
+
+      for (const emdCode of emdCodes) {
+        const polygon = await getPolygonByEmdCode(emdCode);
+        if (polygon) {
+          polygons.push(polygon);
+        }
+      }
+      return polygons;
+    } catch (err) {
+      console.error('Error in getPolygonsInBounds:', err);
       return [];
     }
+  }, [getPolygonByEmdCode]);
 
-    const emdCodes = emdList.map((emd) => emd.EMD_CD);
-    console.log('EMD_CD 목록:', emdCodes);
-
-    // 각 EMD_CD에 대해 polygon 가져오기
-    const polygons: PolygonFeature[] = [];
-
-    for (const emdCode of emdCodes) {
-      const polygon = await getPolygonByEmdCode(emdCode);
-      if (polygon) {
-        polygons.push(polygon);
-      }
-    }
-    return polygons;
-  } catch (err) {
-    console.error('Error in getPolygonsInBounds:', err);
-    return [];
-  }
-}, [getPolygonByEmdCode]);
-
-  return {
-    getPolygonByEmdCode,
-    getPolygonsInBounds,
-  };
+  return { getPolygonByEmdCode, getPolygonsInBounds };
 };
