@@ -63,7 +63,7 @@ const SearchPage = () => {
   }, [location.search])
 
   return (
-    <div className='flex flex-1'>
+    <div className='flex flex-1 h-dvh'>
       <SideBar
         accidentInfo={accidentInfo}
         selectedAccidentId={selectedAccidentId}

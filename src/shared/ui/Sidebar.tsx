@@ -11,7 +11,7 @@ const SideBar = ({ accidentInfo, selectedAccidentId, onAccidentCardClick }: Side
   const isEmpty = !accidentInfo || accidentInfo.totalAccident === 0
 
   return (
-    <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>
+    <div className='flex flex-col flex-1 py-4 px-6 gap-[18px] h-full overflow-y-auto'>
       <RegionInfo accidentInfo={accidentInfo} />
       {isEmpty ? (
         <EmptyState />
