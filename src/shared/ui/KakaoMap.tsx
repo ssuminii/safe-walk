@@ -149,6 +149,7 @@ const KakaoMap = ({
       if (targetAccident) {
         setMapCenter(targetAccident.point)
         setMapLevel(3)
+        setSelectedRegionId(null)
       }
     }
   }, [selectedAccidentId, targetAccident])
