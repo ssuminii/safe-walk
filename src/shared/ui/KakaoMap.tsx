@@ -112,10 +112,10 @@ const KakaoMap = ({
 
     try {
       const spots = await getRegionLabels({
-        swLat: sw.getLat(),
-        swLng: sw.getLng(),
-        neLat: ne.getLat(),
-        neLng: ne.getLng(),
+        swLat: parseFloat(sw.getLat().toFixed(4)),
+        swLng: parseFloat(sw.getLng().toFixed(4)),
+        neLat: parseFloat(ne.getLat().toFixed(4)),
+        neLng: parseFloat(ne.getLng().toFixed(4)),
       })
       setRegionLabels(spots)
     } catch (err) {
@@ -130,10 +130,10 @@ const KakaoMap = ({
     const ne = bounds.getNorthEast()
 
     setBoundsParams({
-      swLat: sw.getLat(),
-      swLng: sw.getLng(),
-      neLat: ne.getLat(),
-      neLng: ne.getLng(),
+      swLat: parseFloat(sw.getLat().toFixed(4)),
+      swLng: parseFloat(sw.getLng().toFixed(4)),
+      neLat: parseFloat(ne.getLat().toFixed(4)),
+      neLng: parseFloat(ne.getLng().toFixed(4)),
     })
   }
 
