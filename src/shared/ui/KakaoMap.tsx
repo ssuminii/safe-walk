@@ -4,7 +4,7 @@ import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getRegionLabels } from '../../pages/search-page/api/map'
 import { usePolygonLoader } from '../hooks/usePolygonLoader'
-import { usePolygonLoaderQuery } from '../hooks/usePolygonLoaderQuery'
+import { usePolygonLoaderQuery, useRegionAccidentListQuery } from '../hooks/query'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -31,6 +31,8 @@ const KakaoMap = ({
   const [isSearchMove, setIsSearchMove] = useState(false)
   const hasInitializedMapRef = useRef(false)
 
+  const [accidentList, setAccidentList] = useState<RegionInfoType[]>()
+
   const { getPolygonByEmdCode } = usePolygonLoader()
 
   const [boundsParams, setBoundsParams] = useState<{
@@ -41,6 +43,15 @@ const KakaoMap = ({
   } | null>(null)
 
   const { data: allPolygons = [] } = usePolygonLoaderQuery(
+    boundsParams ?? {
+      swLat: 0,
+      swLng: 0,
+      neLat: 0,
+      neLng: 0,
+    }
+  )
+
+  const { data: regionAccidentList = [] } = useRegionAccidentListQuery(
     boundsParams ?? {
       swLat: 0,
       swLng: 0,
@@ -87,6 +98,15 @@ const KakaoMap = ({
     },
     [onSelectRegion, onSelectAccident]
   )
+
+  // 사고 데이터 업데이트
+  useEffect(() => {
+    if (mapLevel < 5 && regionAccidentList.length > 0) {
+      setAccidentList(regionAccidentList)
+    } else {
+      setAccidentList([]) // 확대 안 됐으면 초기화
+    }
+  }, [regionAccidentList, mapLevel])
 
   // 검색 결과 위치로 지도 중심 이동
   useEffect(() => {
@@ -207,6 +227,22 @@ const KakaoMap = ({
             />
           </CustomOverlayMap>
         ))}
+      {mapLevel < 5 &&
+        accidentList?.flatMap(
+          (region) =>
+            region.accidents?.map((accident) => (
+              <CustomOverlayMap key={accident.id} position={accident.point}>
+                {selectedAccidentId === accident.id ? (
+                  <AccidentSelectedPin accidentCount={accident.accidentCount} />
+                ) : (
+                  <AccidentPin
+                    accidentCount={accident.accidentCount}
+                    onClick={() => handleAccidentPinClick(accident.id)}
+                  />
+                )}
+              </CustomOverlayMap>
+            )) ?? []
+        )}
 
       {selectedAccidentId &&
         accidentInfo?.accidents.map((accident) => (

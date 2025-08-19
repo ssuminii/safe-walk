@@ -1,5 +1,5 @@
 import { apiClient } from '../../../shared/lib/apiClient'
-import type { EmnSearchResult, RegionLabels } from '../../../shared/types/map'
+import type { EmnSearchResult, RegionInfoType, RegionLabels } from '../../../shared/types/map'
 
 export interface RegionLabelsParams {
   swLat: number
@@ -26,6 +26,14 @@ export const getRegionInfo = async ({ regionId }: {regionId: string}) => {
 export const searchRegionInfoByName = async (name: string): Promise<EmnSearchResult[]> => {
   const response = await apiClient.get<EmnSearchResult[]>('/emd/search/name', {
     params: { name },
+  })
+  return response.data
+}
+
+// 지도 영역 사고 상세 데이터 조회
+export const getRegionAccidentList = async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<RegionInfoType[]> => {
+  const response = await apiClient.get<RegionInfoType[]>('/emd/details', {
+    params: { swLat, swLng, neLat, neLng },
   })
   return response.data
 }
