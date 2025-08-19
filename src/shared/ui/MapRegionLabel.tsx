@@ -2,6 +2,7 @@ interface MapRegionLabelProps {
   regionLabel: string
   accidentCount: number
   onSelect: () => void
+  isSelected?: boolean
 }
 
 const levelColor: Record<number, string> = {
@@ -16,13 +17,23 @@ const getLevel = (accidentCount: number): number => {
   return 2
 }
 
-const MapRegionLabel = ({ regionLabel, accidentCount, onSelect }: MapRegionLabelProps) => {
+const MapRegionLabel = ({
+  regionLabel,
+  accidentCount,
+  onSelect,
+  isSelected = false,
+}: MapRegionLabelProps) => {
   const level = getLevel(accidentCount)
 
   return (
     <div
-      className={`m1 text-white rounded-sm min-w-[58px] py-[3px] px-[13px] text-center ${levelColor[level]}`}
       onClick={onSelect}
+      className={`m1 text-white rounded-sm min-w-[58px] py-[3px] px-[13px] text-center ${levelColor[level]}`}
+      style={{
+        position: 'relative',
+        zIndex: isSelected ? 9999 : 1,
+        transition: 'z-index 0.2s',
+      }}
     >
       {regionLabel}
     </div>

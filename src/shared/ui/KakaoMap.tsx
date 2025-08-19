@@ -58,21 +58,13 @@ const KakaoMap = ({
       )
     : []
 
+  // 지역 라벨 선택
   const handleRegionSelect = useCallback(
     async (regionId: string) => {
-      // console.log('지역 선택:', regionId)
-
-      // 선택된 지역 ID 저장
       setSelectedRegionId(regionId)
       onSelectRegion(regionId)
-
-      // 개별 폴리곤도 가져오기 (혹시 allPolygons에 없을 경우 대비)
-      // const polygon = await getPolygonByEmdCode(regionId)
-      // if (polygon) {
-      //   console.log('개별 polygon 로드:', polygon)
-      // }
     },
-    [onSelectRegion, getPolygonByEmdCode]
+    [onSelectRegion, getPolygonByEmdCode, setSelectedRegionId]
   )
 
   // 사고 핀 클릭
@@ -97,23 +89,23 @@ const KakaoMap = ({
     [onSelectRegion, onSelectAccident]
   )
 
-  // useEffect(() => {
-  //   if (searchMapCenter && mapRef.current) {
-  //     setIsSearchMove(true)
-  //     setMapCenter(searchMapCenter)
-  //     fetchRegionLabels(mapRef.current)
-  //     updateBoundsParams(mapRef.current)
-  //     setMapLevel(7)
-  //   }
-  // }, [searchMapCenter])
-
+  // 검색 결과 위치로 지도 중심 이동
   useEffect(() => {
-    if (!searchMapCenter) return
-    setIsSearchMove(true)
+    if (!searchMapCenter || !mapRef.current) return
+
+    const map = mapRef.current
+    const targetLatLng = new kakao.maps.LatLng(searchMapCenter.lat, searchMapCenter.lng)
+
+    map.setCenter(targetLatLng)
+    map.setLevel(7)
+
+    fetchRegionLabels(map)
+    updateBoundsParams(map)
+
     setMapCenter(searchMapCenter)
-    setMapLevel(7)
   }, [searchMapCenter])
 
+  // 지도 화면 영역 법정동 전체 조회
   const fetchRegionLabels = async (map: kakao.maps.Map) => {
     const bounds = map.getBounds()
     const sw = bounds.getSouthWest()
@@ -148,20 +140,15 @@ const KakaoMap = ({
 
   // 사이드바에서 선택된 사고와 일치되는 위치 설정
   useEffect(() => {
-    if (selectedAccidentId) {
-      const targetAccidentId = accidentInfo?.accidents.find(
-        (accident) => accident.id === selectedAccidentId
-      )
+    if (!selectedAccidentId || !accidentInfo) return
 
-      setTargetAccident(targetAccidentId)
+    const accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
+    if (!accident) return
 
-      if (targetAccident) {
-        setMapCenter(targetAccident.point)
-        setMapLevel(3)
-        setSelectedRegionId(null)
-      }
-    }
-  }, [selectedAccidentId, targetAccident])
+    setMapCenter(accident.point)
+    setMapLevel(3)
+    setSelectedRegionId(null)
+  }, [selectedAccidentId, accidentInfo])
 
   const handleCenterChanged = useCallback(
     (map: kakao.maps.Map) => {
