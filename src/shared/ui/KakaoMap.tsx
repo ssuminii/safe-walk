@@ -3,7 +3,6 @@ import type { RegionInfoType, RegionLabels } from '../types/map'
 import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from './'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getRegionLabels } from '../../pages/search-page/api/map'
-import { usePolygonLoader } from '../hooks/usePolygonLoader'
 import { usePolygonLoaderQuery, useRegionAccidentListQuery } from '../hooks/query'
 
 interface KakaoMapProps {
@@ -246,6 +245,7 @@ const KakaoMap = ({
             />
           </CustomOverlayMap>
         ))}
+
       {mapLevel < 5 &&
         accidentList?.flatMap(
           (region) =>
