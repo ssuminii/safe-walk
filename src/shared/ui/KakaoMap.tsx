@@ -75,6 +75,7 @@ const KakaoMap = ({
     [onSelectRegion, getPolygonByEmdCode]
   )
 
+  // 사고 핀 클릭
   const handleAccidentPinClick = useCallback(
     (accidentId: string) => {
       onSelectAccident(accidentId)
@@ -82,6 +83,7 @@ const KakaoMap = ({
     [onSelectAccident]
   )
 
+  // 지도 확대 및 축소
   const handleZoomChanged = useCallback(
     (map: kakao.maps.Map) => {
       const currentLevel = map.getLevel()
@@ -95,14 +97,21 @@ const KakaoMap = ({
     [onSelectRegion, onSelectAccident]
   )
 
+  // useEffect(() => {
+  //   if (searchMapCenter && mapRef.current) {
+  //     setIsSearchMove(true)
+  //     setMapCenter(searchMapCenter)
+  //     fetchRegionLabels(mapRef.current)
+  //     updateBoundsParams(mapRef.current)
+  //     setMapLevel(7)
+  //   }
+  // }, [searchMapCenter])
+
   useEffect(() => {
-    if (searchMapCenter && mapRef.current) {
-      setIsSearchMove(true)
-      setMapCenter(searchMapCenter)
-      fetchRegionLabels(mapRef.current)
-      updateBoundsParams(mapRef.current)
-      setMapLevel(7)
-    }
+    if (!searchMapCenter) return
+    setIsSearchMove(true)
+    setMapCenter(searchMapCenter)
+    setMapLevel(7)
   }, [searchMapCenter])
 
   const fetchRegionLabels = async (map: kakao.maps.Map) => {
