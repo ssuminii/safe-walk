@@ -95,9 +95,11 @@ const KakaoMap = ({
       if (currentLevel >= 5) {
         onSelectRegion(null)
         onSelectAccident(null)
+      } else if (currentLevel < 5) {
+        setSelectedRegionId(null)
       }
     },
-    [onSelectRegion, onSelectAccident]
+    [onSelectRegion, onSelectAccident, setSelectedRegionId]
   )
 
   // 사고 데이터 업데이트
