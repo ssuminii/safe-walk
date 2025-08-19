@@ -237,6 +237,7 @@ const KakaoMap = ({
             key={regionLabel.EMD_CD}
             position={{ lat: regionLabel.latitude, lng: regionLabel.longitude }}
             yAnchor={1}
+            zIndex={selectedRegionId === regionLabel.EMD_CD ? 1000 : 1}
           >
             <MapRegionLabel
               regionLabel={regionLabel.name}
@@ -250,7 +251,11 @@ const KakaoMap = ({
         accidentList?.flatMap(
           (region) =>
             region.accidents?.map((accident) => (
-              <CustomOverlayMap key={accident.id} position={accident.point}>
+              <CustomOverlayMap
+                key={accident.id}
+                position={accident.point}
+                zIndex={selectedAccidentId === accident.id ? 1000 : 1}
+              >
                 {selectedAccidentId === accident.id ? (
                   <AccidentSelectedPin accidentCount={accident.accidentCount} />
                 ) : (
@@ -265,7 +270,11 @@ const KakaoMap = ({
 
       {selectedAccidentId &&
         accidentInfo?.accidents.map((accident) => (
-          <CustomOverlayMap key={accident.id} position={accident.point}>
+          <CustomOverlayMap
+            key={accident.id}
+            position={accident.point}
+            zIndex={selectedAccidentId === accident.id ? 1000 : 1}
+          >
             {selectedAccidentId === accident.id ? (
               <AccidentSelectedPin accidentCount={accident.accidentCount} />
             ) : (
