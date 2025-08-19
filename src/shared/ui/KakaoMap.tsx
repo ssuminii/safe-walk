@@ -37,8 +37,6 @@ const KakaoMap = ({
 
   const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
 
-  const { getPolygonByEmdCode } = usePolygonLoader()
-
   const [boundsParams, setBoundsParams] = useState<{
     swLat: number
     swLng: number
