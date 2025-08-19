@@ -80,7 +80,7 @@ const KakaoMap = ({
       const currentLevel = map.getLevel()
       setMapLevel(currentLevel)
 
-      if (currentLevel >= 7) {
+      if (currentLevel >= 5) {
         onSelectRegion(null)
         onSelectAccident(null)
       }
@@ -145,7 +145,7 @@ const KakaoMap = ({
     if (!accident) return
 
     setMapCenter(accident.point)
-    setMapLevel(3)
+    setMapLevel(4)
     setSelectedRegionId(null)
   }, [selectedAccidentId, accidentInfo])
 
