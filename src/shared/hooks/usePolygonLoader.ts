@@ -23,6 +23,7 @@ const getPolygonByEmdCode = useCallback(
         return null
       }
 
+
       const cacheKey = ['regionPolygon', regionKey]
       let regionData = queryClient.getQueryData<{ features: PolygonFeature[] }>(cacheKey)
 
@@ -37,32 +38,38 @@ const getPolygonByEmdCode = useCallback(
   )
 
   // 경계 내 polygon들 가져오기
-  const getPolygonsInBounds = useCallback(async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<PolygonFeature[]> => {
+  const getPolygonsInBounds = useCallback(
+  async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<PolygonFeature[]> => {
     try {
       const emdList = await getRegionLabels({ swLat, swLng, neLat, neLng });
-      
+
       if (!Array.isArray(emdList) || emdList.length === 0) {
         return [];
       }
 
-      const emdCodes = emdList.map((emd) => emd.EMD_CD);
-      // console.log('EMD_CD 목록:', emdCodes);
-
-      // 각 EMD_CD에 대해 polygon 가져오기
       const polygons: PolygonFeature[] = [];
 
-      for (const emdCode of emdCodes) {
-        const polygon = await getPolygonByEmdCode(emdCode);
+      for (const emd of emdList) {
+        const polygon = await getPolygonByEmdCode(emd.EMD_CD);
         if (polygon) {
-          polygons.push(polygon);
+          polygons.push({
+            ...polygon,
+            properties: {
+              ...polygon.properties,
+              totalAccident: emd.totalAccident, 
+            },
+          });
         }
       }
+
       return polygons;
     } catch (err) {
       console.error('Error in getPolygonsInBounds:', err);
       return [];
     }
-  }, [getPolygonByEmdCode]);
+  },
+  [getPolygonByEmdCode]
+);
 
   return { getPolygonByEmdCode, getPolygonsInBounds };
 };

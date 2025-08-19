@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import proj4 from 'proj4'
 import type { PolygonFeature } from '../types/polygon'
+import { getLevel } from '../utils'
 
 interface RegionPolygonProps {
   polygon: PolygonFeature
@@ -8,6 +9,18 @@ interface RegionPolygonProps {
 }
 
 const RegionPolygon = ({ polygon, map }: RegionPolygonProps) => {
+  const accidentCount = polygon.properties.totalAccident ?? 0
+  console.log('지도 영역 사고 수 ', accidentCount)
+  const level = getLevel(accidentCount)
+
+  let fillColor = '#326CF9'
+
+  if (level === 1) {
+    fillColor = '#FF7607'
+  } else if (level === 2) {
+    fillColor = '#EF4136'
+  }
+
   useEffect(() => {
     const projections = {
       // WGS84 경위도 (카카오맵이 사용하는 좌표계)
@@ -98,11 +111,11 @@ const RegionPolygon = ({ polygon, map }: RegionPolygonProps) => {
     const polygonOverlay = new kakao.maps.Polygon({
       path,
       strokeWeight: 1.5,
-      strokeColor: '#EF4136',
+      strokeColor: fillColor,
       strokeOpacity: 0.8,
       strokeStyle: 'solid',
-      fillColor: '#FFDFDF',
-      fillOpacity: 0.6,
+      fillColor: fillColor,
+      fillOpacity: 0.3,
     })
 
     polygonOverlay.setMap(map)

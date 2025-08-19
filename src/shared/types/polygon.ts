@@ -5,6 +5,7 @@ export interface PolygonFeature {
     EMD_CD: string;
     EMD_ENG_NM: string;
     EMD_KOR_NM: string;
+    totalAccident: number;
   };
   geometry: {
     type: "Polygon";
