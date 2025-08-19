@@ -193,7 +193,7 @@ const KakaoMap = ({
       style={{ width: '100%', height: '100%' }}
       className='flex-3'
       level={mapLevel}
-      onZoomChanged={handleZoomChanged}
+      onBoundsChanged={handleZoomChanged}
       onCenterChanged={handleCenterChanged}
       onCreate={(map) => {
         if (hasInitializedMapRef.current) return
@@ -213,6 +213,7 @@ const KakaoMap = ({
       )}
 
       {!selectedAccidentId &&
+        mapLevel >= 5 &&
         regionLabels.length > 0 &&
         regionLabels.map((regionLabel) => (
           <CustomOverlayMap
