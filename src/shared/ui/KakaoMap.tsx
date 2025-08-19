@@ -105,10 +105,10 @@ const KakaoMap = ({
   useEffect(() => {
     if (mapLevel < 5 && regionAccidentList.length > 0) {
       setAccidentList(regionAccidentList)
-      onAccidentListChange(regionAccidentList) // ✅ 부모에 전달
+      onAccidentListChange(regionAccidentList)
     } else {
       setAccidentList([])
-      onAccidentListChange([]) // ✅ 확대하면 초기화
+      onAccidentListChange([])
     }
   }, [regionAccidentList, mapLevel])
 
@@ -163,15 +163,27 @@ const KakaoMap = ({
 
   // 사이드바에서 선택된 사고와 일치되는 위치 설정
   useEffect(() => {
-    if (!selectedAccidentId || !accidentInfo) return
+    if (!selectedAccidentId) return
 
-    const accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
-    if (!accident) return
+    let accident = null
 
-    setMapCenter(accident.point)
-    setMapLevel(4)
-    setSelectedRegionId(null)
-  }, [selectedAccidentId, accidentInfo])
+    if (accidentInfo) {
+      accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
+    }
+
+    if (!accident && accidentList.length > 0) {
+      for (const region of accidentList) {
+        accident = region.accidents?.find((a) => a.id === selectedAccidentId)
+        if (accident) break
+      }
+    }
+
+    if (accident) {
+      setMapCenter(accident.point)
+      setMapLevel(4)
+      setSelectedRegionId(null)
+    }
+  }, [selectedAccidentId, accidentInfo, accidentList])
 
   const handleCenterChanged = useCallback(
     (map: kakao.maps.Map) => {
