@@ -7,3 +7,5 @@ const baseConfig: CreateAxiosDefaults = {
 };
 
 export const apiClient = axios.create(baseConfig);
+
+
