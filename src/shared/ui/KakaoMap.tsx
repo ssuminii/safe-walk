@@ -1,5 +1,5 @@
 import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
-import type { RegionInfoType, RegionLabels, Accident } from '../types/map'
+import type { RegionInfoType, RegionLabels } from '../types/map'
 import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from './'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getRegionLabels } from '../../pages/search-page/api/map'
@@ -26,7 +26,6 @@ const KakaoMap = ({
   const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
   const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
-  const [targetAccident, setTargetAccident] = useState<Accident>()
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
   const mapRef = useRef<kakao.maps.Map | null>(null)
   const [isSearchMove, setIsSearchMove] = useState(false)
