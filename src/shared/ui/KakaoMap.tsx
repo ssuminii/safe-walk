@@ -69,6 +69,8 @@ const KakaoMap = ({
       )
     : []
 
+  console.log('폴리곤 영역', selectedPolygons)
+
   // 지역 라벨 선택
   const handleRegionSelect = useCallback(
     async (regionId: string) => {
