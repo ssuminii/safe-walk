@@ -6,7 +6,7 @@ const RegionInfo = ({ accidentInfo }: { accidentInfo: RegionInfoType | null }) =
       <div className='rounded-full bg-gray-1 text-white m1 min-w-[66px] py-[2px] px-[17px] text-center'>
         {accidentInfo?.name ?? '-'}
       </div>
-      <span className='r1 text-gray-6'>{accidentInfo?.totalAccident ?? 0}곳</span>
+      <span className='r1 text-gray-6'>{accidentInfo?.accidents.length ?? 0}곳</span>
     </div>
   )
 }
