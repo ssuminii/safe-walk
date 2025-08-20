@@ -4,6 +4,7 @@ import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from 
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { getRegionLabels } from '../../pages/search-page/api/map'
 import { usePolygonLoaderQuery, useRegionAccidentListQuery } from '../hooks/query'
+import { useGeolocation } from '../hooks'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -13,6 +14,7 @@ interface KakaoMapProps {
   searchMapCenter: { lat: number; lng: number } | null
   onAccidentListChange: (list: RegionInfoType[]) => void
   searchedRegionId?: string | null
+  useCurrentLocation?: boolean
 }
 
 const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
@@ -25,6 +27,7 @@ const KakaoMap = ({
   searchMapCenter,
   onAccidentListChange,
   searchedRegionId,
+  useCurrentLocation = true,
 }: KakaoMapProps) => {
   const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
   const [mapLevel, setMapLevel] = useState(7)
@@ -35,6 +38,7 @@ const KakaoMap = ({
   const hasInitializedMapRef = useRef(false)
 
   const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
+  const { position: currentPosition, error: locationError } = useGeolocation()
 
   const [boundsParams, setBoundsParams] = useState<{
     swLat: number
@@ -69,7 +73,39 @@ const KakaoMap = ({
       )
     : []
 
-  console.log('폴리곤 영역', selectedPolygons)
+  // 지도 중심 값
+  useEffect(() => {
+    if (searchMapCenter) {
+      setMapCenter(searchMapCenter)
+    } else if (useCurrentLocation && currentPosition && !locationError) {
+      setMapCenter(currentPosition)
+    } else {
+      setMapCenter(HWANGNIDANGIL)
+    }
+  }, [searchMapCenter, currentPosition, locationError, useCurrentLocation])
+
+  // 지도가 생성된 후 현재 위치로 이동했을 때 지역 라벨 데이터 로드
+  useEffect(() => {
+    if (
+      mapRef.current &&
+      useCurrentLocation &&
+      currentPosition &&
+      !locationError &&
+      !searchMapCenter
+    ) {
+      const map = mapRef.current
+      const targetLatLng = new kakao.maps.LatLng(currentPosition.lat, currentPosition.lng)
+
+      map.setCenter(targetLatLng)
+
+      setTimeout(() => {
+        if (mapRef.current) {
+          fetchRegionLabels(mapRef.current)
+          updateBoundsParams(mapRef.current)
+        }
+      }, 200)
+    }
+  }, [currentPosition, mapRef.current, useCurrentLocation, locationError, searchMapCenter])
 
   // 지역 라벨 선택
   const handleRegionSelect = useCallback(
