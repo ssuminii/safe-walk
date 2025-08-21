@@ -69,7 +69,7 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
 
       {/* 선택된 사고 정보 오버레이 */}
       {selectedAccidentId &&
-        accidentInfo?.accidents.map((accident) => (
+        accidentInfo?.accidents?.map((accident) => (
           <CustomOverlayMap
             key={accident.id}
             position={accident.point}
