@@ -1,10 +1,17 @@
-import { CustomOverlayMap, Map } from 'react-kakao-maps-sdk'
-import type { RegionInfoType, RegionLabels } from '../types/map'
-import { AccidentPin, AccidentSelectedPin, MapRegionLabel, RegionPolygon } from './'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { getRegionLabels } from '../../pages/search-page/api/map'
-import { usePolygonLoaderQuery, useRegionAccidentListQuery } from '../hooks/query'
-import { useGeolocation } from '../hooks'
+import { Map } from 'react-kakao-maps-sdk'
+import type { RegionInfoType } from '../types/map'
+import { MapOverlays, RegionPolygon } from './'
+import { useEffect } from 'react'
+import {
+  useAccidentData,
+  useGeolocation,
+  useMapBounds,
+  useMapEventHandlers,
+  useMapState,
+  useRegionLabels,
+} from '../hooks'
+import type { PolygonFeature } from '../types/polygon'
+import { usePolygonLoaderQuery } from '../hooks/query'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -17,8 +24,6 @@ interface KakaoMapProps {
   useCurrentLocation?: boolean
 }
 
-const HWANGNIDANGIL = { lat: 35.841442, lng: 129.216828 }
-
 const KakaoMap = ({
   accidentInfo,
   onSelectRegion,
@@ -29,41 +34,40 @@ const KakaoMap = ({
   searchedRegionId,
   useCurrentLocation = true,
 }: KakaoMapProps) => {
-  const [mapCenter, setMapCenter] = useState(searchMapCenter ?? HWANGNIDANGIL)
-  const [mapLevel, setMapLevel] = useState(7)
-  const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
-  const mapRef = useRef<kakao.maps.Map | null>(null)
-  const [isSearchMove, setIsSearchMove] = useState(false)
-  const hasInitializedMapRef = useRef(false)
+  const {
+    mapCenter,
+    setMapCenter,
+    mapLevel,
+    setMapLevel,
+    selectedRegionId,
+    setSelectedRegionId,
+    isSearchMove,
+    setIsSearchMove,
+    mapRef,
+    hasInitializedMapRef,
+  } = useMapState(searchMapCenter)
 
-  const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
+  const { boundsParams, updateBoundsParams } = useMapBounds()
+  const { regionLabels, fetchRegionLabels } = useRegionLabels()
+  const { accidentList } = useAccidentData(boundsParams, mapLevel, onAccidentListChange)
   const { position: currentPosition, error: locationError } = useGeolocation()
 
-  const [boundsParams, setBoundsParams] = useState<{
-    swLat: number
-    swLng: number
-    neLat: number
-    neLng: number
-  } | null>(null)
-
   const { data: allPolygons = [] } = usePolygonLoaderQuery(
-    boundsParams ?? {
-      swLat: 0,
-      swLng: 0,
-      neLat: 0,
-      neLng: 0,
-    }
+    boundsParams ?? { swLat: 0, swLng: 0, neLat: 0, neLng: 0 }
   )
 
-  const { data: regionAccidentList = [] } = useRegionAccidentListQuery(
-    boundsParams ?? {
-      swLat: 0,
-      swLng: 0,
-      neLat: 0,
-      neLng: 0,
-    }
-  )
+  const { handleRegionSelect, handleAccidentPinClick, handleZoomChanged, handleCenterChanged } =
+    useMapEventHandlers({
+      onSelectRegion,
+      onSelectAccident,
+      setMapLevel,
+      setSelectedRegionId,
+      setMapCenter,
+      isSearchMove,
+      setIsSearchMove,
+      fetchRegionLabels,
+      updateBoundsParams,
+    })
 
   // 선택된 지역 영역
   const selectedPolygons = selectedRegionId
@@ -73,16 +77,15 @@ const KakaoMap = ({
       )
     : []
 
-  // 지도 중심 값
   useEffect(() => {
     if (searchMapCenter) {
       setMapCenter(searchMapCenter)
     } else if (useCurrentLocation && currentPosition && !locationError) {
       setMapCenter(currentPosition)
     } else {
-      setMapCenter(HWANGNIDANGIL)
+      setMapCenter({ lat: 35.841442, lng: 129.216828 }) // HWANGNIDANGIL
     }
-  }, [searchMapCenter, currentPosition, locationError, useCurrentLocation])
+  }, [searchMapCenter, currentPosition, locationError, useCurrentLocation, setMapCenter])
 
   // 지도가 생성된 후 현재 위치로 이동했을 때 지역 라벨 데이터 로드
   useEffect(() => {
@@ -105,51 +108,15 @@ const KakaoMap = ({
         }
       }, 200)
     }
-  }, [currentPosition, mapRef.current, useCurrentLocation, locationError, searchMapCenter])
-
-  // 지역 라벨 선택
-  const handleRegionSelect = useCallback(
-    async (regionId: string) => {
-      setSelectedRegionId(regionId)
-      onSelectRegion(regionId)
-    },
-    [onSelectRegion, setSelectedRegionId]
-  )
-
-  // 사고 핀 클릭
-  const handleAccidentPinClick = useCallback(
-    (accidentId: string) => {
-      onSelectAccident(accidentId)
-    },
-    [onSelectAccident]
-  )
-
-  // 지도 확대 및 축소
-  const handleZoomChanged = useCallback(
-    (map: kakao.maps.Map) => {
-      const currentLevel = map.getLevel()
-      setMapLevel(currentLevel)
-
-      if (currentLevel >= 5) {
-        onSelectRegion(null)
-        onSelectAccident(null)
-      } else if (currentLevel < 5) {
-        setSelectedRegionId(null)
-      }
-    },
-    [onSelectRegion, onSelectAccident, setSelectedRegionId]
-  )
-
-  // 사고 데이터 업데이트
-  useEffect(() => {
-    if (mapLevel < 5 && regionAccidentList.length > 0) {
-      setAccidentList(regionAccidentList)
-      onAccidentListChange(regionAccidentList)
-    } else {
-      setAccidentList([])
-      onAccidentListChange([])
-    }
-  }, [regionAccidentList, mapLevel])
+  }, [
+    currentPosition,
+    mapRef.current,
+    useCurrentLocation,
+    locationError,
+    searchMapCenter,
+    fetchRegionLabels,
+    updateBoundsParams,
+  ])
 
   // 검색 결과 위치로 지도 중심 이동
   useEffect(() => {
@@ -167,40 +134,14 @@ const KakaoMap = ({
     updateBoundsParams(map)
 
     setMapCenter(searchMapCenter)
-  }, [searchMapCenter])
-
-  // 지도 화면 영역 법정동 전체 조회
-  const fetchRegionLabels = async (map: kakao.maps.Map) => {
-    const bounds = map.getBounds()
-    const sw = bounds.getSouthWest()
-    const ne = bounds.getNorthEast()
-
-    try {
-      const spots = await getRegionLabels({
-        swLat: parseFloat(sw.getLat().toFixed(4)),
-        swLng: parseFloat(sw.getLng().toFixed(4)),
-        neLat: parseFloat(ne.getLat().toFixed(4)),
-        neLng: parseFloat(ne.getLng().toFixed(4)),
-      })
-      setRegionLabels(spots)
-    } catch (err) {
-      console.error('지역 라벨 정보 불러오기 실패:', err)
-    }
-  }
-
-  // polygon
-  const updateBoundsParams = (map: kakao.maps.Map) => {
-    const bounds = map.getBounds()
-    const sw = bounds.getSouthWest()
-    const ne = bounds.getNorthEast()
-
-    setBoundsParams({
-      swLat: parseFloat(sw.getLat().toFixed(4)),
-      swLng: parseFloat(sw.getLng().toFixed(4)),
-      neLat: parseFloat(ne.getLat().toFixed(4)),
-      neLng: parseFloat(ne.getLng().toFixed(4)),
-    })
-  }
+  }, [
+    searchMapCenter,
+    searchedRegionId,
+    setSelectedRegionId,
+    fetchRegionLabels,
+    updateBoundsParams,
+    setMapCenter,
+  ])
 
   // 사이드바에서 선택된 사고와 일치되는 위치 설정
   useEffect(() => {
@@ -224,24 +165,14 @@ const KakaoMap = ({
       setMapLevel(4)
       setSelectedRegionId(null)
     }
-  }, [selectedAccidentId, accidentInfo, accidentList])
-
-  const handleCenterChanged = useCallback(
-    (map: kakao.maps.Map) => {
-      const center = map.getCenter()
-      setMapCenter({
-        lat: center.getLat(),
-        lng: center.getLng(),
-      })
-
-      if (isSearchMove) {
-        fetchRegionLabels(map)
-        updateBoundsParams(map)
-        setIsSearchMove(false)
-      }
-    },
-    [isSearchMove]
-  )
+  }, [
+    selectedAccidentId,
+    accidentInfo,
+    accidentList,
+    setMapCenter,
+    setMapLevel,
+    setSelectedRegionId,
+  ])
 
   return (
     <Map
@@ -263,68 +194,22 @@ const KakaoMap = ({
         }
       }}
     >
-      {selectedPolygons.map((polygon) =>
+      {selectedPolygons.map((polygon: PolygonFeature) =>
         mapRef.current ? (
           <RegionPolygon key={polygon.id} polygon={polygon} map={mapRef.current} />
         ) : null
       )}
 
-      {!selectedAccidentId &&
-        mapLevel >= 5 &&
-        regionLabels.length > 0 &&
-        regionLabels.map((regionLabel) => (
-          <CustomOverlayMap
-            key={regionLabel.EMD_CD}
-            position={{ lat: regionLabel.latitude, lng: regionLabel.longitude }}
-            yAnchor={1}
-            zIndex={selectedRegionId === regionLabel.EMD_CD ? 1000 : 1}
-          >
-            <MapRegionLabel
-              regionLabel={regionLabel.name}
-              accidentCount={regionLabel.totalAccident}
-              onSelect={() => handleRegionSelect(regionLabel.EMD_CD)}
-            />
-          </CustomOverlayMap>
-        ))}
-
-      {mapLevel < 5 &&
-        accidentList?.flatMap(
-          (region) =>
-            region.accidents?.map((accident) => (
-              <CustomOverlayMap
-                key={accident.id}
-                position={accident.point}
-                zIndex={selectedAccidentId === accident.id ? 1000 : 1}
-              >
-                {selectedAccidentId === accident.id ? (
-                  <AccidentSelectedPin accidentCount={accident.accidentCount} />
-                ) : (
-                  <AccidentPin
-                    accidentCount={accident.accidentCount}
-                    onClick={() => handleAccidentPinClick(accident.id)}
-                  />
-                )}
-              </CustomOverlayMap>
-            )) ?? []
-        )}
-
-      {selectedAccidentId &&
-        accidentInfo?.accidents.map((accident) => (
-          <CustomOverlayMap
-            key={accident.id}
-            position={accident.point}
-            zIndex={selectedAccidentId === accident.id ? 1000 : 1}
-          >
-            {selectedAccidentId === accident.id ? (
-              <AccidentSelectedPin accidentCount={accident.accidentCount} />
-            ) : (
-              <AccidentPin
-                accidentCount={accident.accidentCount}
-                onClick={() => handleAccidentPinClick(accident.id)}
-              />
-            )}
-          </CustomOverlayMap>
-        ))}
+      <MapOverlays
+        selectedAccidentId={selectedAccidentId}
+        mapLevel={mapLevel}
+        regionLabels={regionLabels}
+        selectedRegionId={selectedRegionId}
+        accidentList={accidentList}
+        accidentInfo={accidentInfo}
+        onRegionSelect={handleRegionSelect}
+        onAccidentPinClick={handleAccidentPinClick}
+      />
     </Map>
   )
 }
