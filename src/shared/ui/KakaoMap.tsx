@@ -128,7 +128,9 @@ const KakaoMap = ({
     map.setCenter(targetLatLng)
     map.setLevel(7)
 
-    setSelectedRegionId(searchedRegionId ?? '')
+    if (searchedRegionId) {
+      setSelectedRegionId(searchedRegionId)
+    }
 
     fetchRegionLabels(map)
     updateBoundsParams(map)

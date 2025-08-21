@@ -9,7 +9,12 @@ export interface RegionLabelsParams {
 }
 
 // 지도 영역 법정동 조회
-export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<RegionLabels[]> => {
+export const getRegionLabels = async ({
+  swLat,
+  swLng,
+  neLat,
+  neLng,
+}: RegionLabelsParams): Promise<RegionLabels[]> => {
   const response = await apiClient.get<RegionLabels[]>('/emd', {
     params: { swLat, swLng, neLat, neLng },
   })
@@ -17,8 +22,16 @@ export const getRegionLabels = async ({ swLat, swLng, neLat, neLng }: RegionLabe
 }
 
 // 법정동 상세 조회
-export const getRegionInfo = async ({ regionId }: {regionId: string}) => {
+export const getRegionInfo = async ({ regionId }: { regionId: string }) => {
   const response = await apiClient.get(`/emd/${regionId}`)
+  return response.data
+}
+
+// 상세 검색 조회
+export const searchRegionInfo = async (name: string): Promise<EmnSearchResult[]> => {
+  const response = await apiClient.get<EmnSearchResult[]>('/emd/search', {
+    params: { name },
+  })
   return response.data
 }
 
@@ -30,8 +43,27 @@ export const searchRegionInfoByName = async (name: string): Promise<EmnSearchRes
   return response.data
 }
 
+// 실시간 검색
+export const searchRegionRealTime = async (query: string): Promise<EmnSearchResult[]> => {
+  const response = await apiClient.get<EmnSearchResult[]>('/emd/search/realtime', {
+    params: { query },
+  })
+  return response.data
+}
+
+// 코드 기반 행정 법정동 조회
+export const searchRegionInfosByCode = async (code: string): Promise<EmnSearchResult> => {
+  const response = await apiClient.get<EmnSearchResult>(`/emd/search/${code}`)
+  return response.data
+}
+
 // 지도 영역 사고 상세 데이터 조회
-export const getRegionAccidentList = async ({ swLat, swLng, neLat, neLng }: RegionLabelsParams): Promise<RegionInfoType[]> => {
+export const getRegionAccidentList = async ({
+  swLat,
+  swLng,
+  neLat,
+  neLng,
+}: RegionLabelsParams): Promise<RegionInfoType[]> => {
   const response = await apiClient.get<RegionInfoType[]>('/emd/details', {
     params: { swLat, swLng, neLat, neLng },
   })

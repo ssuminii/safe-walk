@@ -1,8 +1,8 @@
 import { KakaoMap, SideBar } from '../../shared/ui'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams, useLocation } from 'react-router-dom'
 import type { RegionInfoType } from '../../shared/types/map'
-import { getRegionInfo, searchRegionInfoByName } from './api/map'
+import { getRegionInfo, searchRegionInfoByName, searchRegionInfosByCode } from './api/map'
 
 const SearchPage = () => {
   const location = useLocation()
@@ -12,6 +12,7 @@ const SearchPage = () => {
   const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
   const query = searchParams.get('q')
+  const code = searchParams.get('code')
 
   const [accidentList, setAccidentList] = useState<RegionInfoType[]>([])
 
@@ -39,26 +40,47 @@ const SearchPage = () => {
     fetchRegionInfo()
   }, [selectedRegionId])
 
-  // 단일 검색 조회
+  // 검색 결과 조회
   useEffect(() => {
-    const fetchRegionInfoByQuery = async () => {
-      if (!query) return
-
-      try {
-        const result = await searchRegionInfoByName(query)
-        if (result) {
-          const region = result[0]
-          setSelectedRegionId(region.code)
-          setMapCenter({ lat: region.latitude, lng: region.longitude })
+    const fetchRegion = async () => {
+      if (code) {
+        try {
+          const result = await searchRegionInfosByCode(code)
+          console.log('검색결과', result)
+          if (result) {
+            const regionCode = result.code
+            setSelectedRegionId(regionCode)
+            setMapCenter({ lat: result.latitude, lng: result.longitude })
+          }
+        } catch (err) {
+          console.error('코드 기반 검색 실패:', err)
+          setSelectedRegionId(null)
         }
-      } catch (err) {
-        console.error('단일 검색 실패:', err)
-        setSelectedRegionId(null)
+        return
+      }
+
+      if (query) {
+        try {
+          const result = await searchRegionInfoByName(query)
+          if (result) {
+            const region = result[0]
+            const regionCode = region.code
+            setSelectedRegionId(regionCode)
+            setMapCenter({ lat: region.latitude, lng: region.longitude })
+          }
+        } catch (err) {
+          console.error('이름 기반 검색 실패:', err)
+          setSelectedRegionId(null)
+        }
       }
     }
 
-    fetchRegionInfoByQuery()
+    fetchRegion()
   }, [location.search])
+
+  const handleAccidentListChange = useCallback((list: RegionInfoType[]) => {
+    setAccidentList(list)
+  }, [])
 
   return (
     <div className='flex flex-1 h-[calc(100dvh-75px)]'>
@@ -74,7 +96,7 @@ const SearchPage = () => {
         selectedAccidentId={selectedAccidentId}
         onSelectAccident={setSelectedAccidentId}
         searchMapCenter={mapCenter}
-        onAccidentListChange={setAccidentList}
+        onAccidentListChange={handleAccidentListChange}
         searchedRegionId={selectedRegionId}
       />
     </div>
