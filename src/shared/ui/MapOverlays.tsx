@@ -49,18 +49,18 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
       {mapLevel < 5 &&
         accidentList?.flatMap(
           (region) =>
-            region.accidents?.map((accident) => (
+            region?.accidents?.map((accident) => (
               <CustomOverlayMap
                 key={accident.id}
                 position={accident.point}
                 zIndex={selectedAccidentId === accident.id ? 1000 : 1}
               >
                 {selectedAccidentId === accident.id ? (
-                  <AccidentSelectedPin accidentCount={accident.accidentCount} />
+                  <AccidentSelectedPin accidentCount={accident?.accidentCount} />
                 ) : (
                   <AccidentPin
-                    accidentCount={accident.accidentCount}
-                    onClick={() => onAccidentPinClick(accident.id)}
+                    accidentCount={accident?.accidentCount}
+                    onClick={() => onAccidentPinClick(accident?.id)}
                   />
                 )}
               </CustomOverlayMap>

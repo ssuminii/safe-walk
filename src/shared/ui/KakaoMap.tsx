@@ -152,12 +152,12 @@ const KakaoMap = ({
     let accident = null
 
     if (accidentInfo) {
-      accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
+      accident = accidentInfo?.accidents?.find((a) => a.id === selectedAccidentId)
     }
 
     if (!accident && accidentList.length > 0) {
       for (const region of accidentList) {
-        accident = region.accidents?.find((a) => a.id === selectedAccidentId)
+        accident = region?.accidents?.find((a) => a.id === selectedAccidentId)
         if (accident) break
       }
     }
