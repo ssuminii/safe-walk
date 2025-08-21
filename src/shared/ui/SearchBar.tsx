@@ -104,6 +104,7 @@ const SearchBar = () => {
         } else if (search.trim()) {
           navigate(`?q=${encodeURIComponent(search)}`)
         }
+        setIsOpen(false)
         break
       case 'Escape':
         setIsOpen(false)
