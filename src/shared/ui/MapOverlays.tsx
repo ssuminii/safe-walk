@@ -47,25 +47,26 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
 
       {/* 사고 핀 오버레이 */}
       {mapLevel < 5 &&
-        accidentList?.flatMap(
-          (region) =>
-            region?.accidents?.map((accident) => (
+        accidentList
+          ?.filter((region) => region?.accidents?.length)
+          .flatMap((region) =>
+            region.accidents!.map((accident) => (
               <CustomOverlayMap
                 key={accident.id}
                 position={accident.point}
                 zIndex={selectedAccidentId === accident.id ? 1000 : 1}
               >
                 {selectedAccidentId === accident.id ? (
-                  <AccidentSelectedPin accidentCount={accident?.accidentCount} />
+                  <AccidentSelectedPin accidentCount={accident.accidentCount} />
                 ) : (
                   <AccidentPin
-                    accidentCount={accident?.accidentCount}
-                    onClick={() => onAccidentPinClick(accident?.id)}
+                    accidentCount={accident.accidentCount}
+                    onClick={() => onAccidentPinClick(accident.id)}
                   />
                 )}
               </CustomOverlayMap>
-            )) ?? []
-        )}
+            ))
+          )}
 
       {/* 선택된 사고 정보 오버레이 */}
       {selectedAccidentId &&
