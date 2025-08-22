@@ -46,7 +46,6 @@ const SearchPage = () => {
       if (code) {
         try {
           const result = await searchRegionInfosByCode(code)
-          console.log('검색결과', result)
           if (result) {
             const regionCode = result.code
             setSelectedRegionId(regionCode)
