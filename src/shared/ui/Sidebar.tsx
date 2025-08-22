@@ -16,7 +16,7 @@ const SideBar = ({
   accidentList,
 }: SideBarProps) => {
   const accidentData = accidentInfo
-    ? accidentInfo.accidents
+    ? accidentInfo.accidents ?? []
     : accidentList?.flatMap((region) => region.accidents ?? []).filter(Boolean)
   const selectedCardRef = useRef<HTMLDivElement | null>(null)
 
