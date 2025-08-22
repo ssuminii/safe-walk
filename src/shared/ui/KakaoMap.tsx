@@ -152,14 +152,7 @@ const KakaoMap = ({
     let accident = null
 
     if (accidentInfo) {
-      accident = accidentInfo?.accidents?.find((a) => a.id === selectedAccidentId)
-    }
-
-    if (!accident && accidentList.length > 0) {
-      for (const region of accidentList) {
-        accident = region?.accidents?.find((a) => a.id === selectedAccidentId)
-        if (accident) break
-      }
+      accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
     }
 
     if (accident) {
@@ -167,15 +160,7 @@ const KakaoMap = ({
       setMapLevel(4)
       setSelectedRegionId(null)
     }
-  }, [
-    selectedAccidentId,
-    accidentInfo,
-    accidentList,
-    setMapCenter,
-    setMapLevel,
-    setSelectedRegionId,
-  ])
-
+  }, [selectedAccidentId, accidentInfo])
   return (
     <Map
       ref={mapRef}
