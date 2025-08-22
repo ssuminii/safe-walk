@@ -155,6 +155,13 @@ const KakaoMap = ({
       accident = accidentInfo.accidents.find((a) => a.id === selectedAccidentId)
     }
 
+    if (!accident && accidentList.length > 0) {
+      for (const region of accidentList) {
+        accident = region.accidents?.find((a) => a.id === selectedAccidentId)
+        if (accident) break
+      }
+    }
+
     if (accident) {
       setMapCenter(accident.point)
       setMapLevel(4)
