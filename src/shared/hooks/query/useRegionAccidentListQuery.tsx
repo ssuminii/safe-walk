@@ -7,5 +7,10 @@ export const useRegionAccidentListQuery = (params: RegionLabelsParams) => {
     queryKey: ['regionAccidentList', params],
     queryFn: () => getRegionAccidentList(params),
     enabled: !!params,
+    select: (data) =>
+      // null이거나 사고 리스트가 이상한 region을 미리 제거
+      data?.filter(
+        (region): region is RegionInfoType => !!region && Array.isArray(region.accidents)
+      ) ?? [],
   })
 }

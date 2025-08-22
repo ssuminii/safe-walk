@@ -24,6 +24,7 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
   onRegionSelect,
   onAccidentPinClick,
 }) => {
+  console.log('[MapOverlays] accidentList:', accidentList)
   return (
     <>
       {/* 지역 라벨 오버레이 */}
