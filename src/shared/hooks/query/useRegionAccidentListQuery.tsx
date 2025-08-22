@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { RegionInfoType } from '../../types/map'
-import { getRegionAccidentList, type RegionLabelsParams } from '../../../pages/search-page/api/map'
+import { getRegionAccidentList, type RegionLabelsParams } from '../../../pages/search/api/map'
 
 const isValidBounds = (params: RegionLabelsParams | null) => {
   if (!params) return false

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { getRegionLabels } from '../../pages/search-page/api/map'
+import { getRegionLabels } from '../../pages/search/api/map'
 import type { RegionLabels } from '../types/map'
 
 export const useRegionLabels = () => {

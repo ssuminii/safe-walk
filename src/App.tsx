@@ -1,13 +1,17 @@
-import { Navbar } from './shared/ui'
-import { SearchPage } from './pages/search-page'
+import { SearchPage } from './pages/search'
 import './shared/lib/proj4Defs'
+import TouristSpotPage from './pages/tourist-spot/TouristSpotPage'
+import { Route, Routes } from 'react-router-dom'
+import { MainLayout } from './shared/layout'
 
 function App() {
   return (
-    <div className='w-full flex flex-col h-dvh bg-white'>
-      <Navbar />
-      <SearchPage />
-    </div>
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route path='/' element={<SearchPage />} />
+        <Route path='/tourist-spot' element={<TouristSpotPage />} />
+      </Route>
+    </Routes>
   )
 }
 
