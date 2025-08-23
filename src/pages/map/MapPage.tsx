@@ -4,7 +4,7 @@ import { useSearchParams, useLocation } from 'react-router-dom'
 import type { RegionInfoType } from '../../shared/types/map'
 import { getRegionInfo, searchRegionInfoByName, searchRegionInfosByCode } from './api/map'
 
-const SearchPage = () => {
+const MapPage = () => {
   const location = useLocation()
   const [searchParams] = useSearchParams()
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
@@ -102,4 +102,4 @@ const SearchPage = () => {
   )
 }
 
-export default SearchPage
+export default MapPage

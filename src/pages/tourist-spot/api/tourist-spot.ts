@@ -1,6 +1,6 @@
 import { apiClient } from '../../../shared/lib/apiClient'
 import type { RegionLabels } from '../../../shared/types/map'
-import type { RegionLabelsParams } from '../../search/api/map'
+import type { RegionLabelsParams } from '../../map/api/map'
 
 // 지도 영역 관광지 조회
 export const getTouristSpot = async ({

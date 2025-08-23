@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { PolygonFeature } from '../types/polygon'
-import { getRegionLabels, type RegionLabelsParams } from '../../pages/search/api/map'
-import { getRegionPolygon } from '../../pages/search/api/polygon'
+import { getRegionLabels, type RegionLabelsParams } from '../../pages/map/api/map'
+import { getRegionPolygon } from '../../pages/map/api/polygon'
 import { REGIONS } from '../constants/region'
 import { useQueryClient } from '@tanstack/react-query'
 

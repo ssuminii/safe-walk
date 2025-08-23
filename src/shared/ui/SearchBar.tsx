@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import SearchIcon from '../../assets/search.svg?react'
 import { useNavigate } from 'react-router-dom'
 import type { EmnSearchResult } from '../types/map'
-import { searchRegionRealTime } from '../../pages/search/api/map'
+import { searchRegionRealTime } from '../../pages/map/api/map'
 
 const SearchBar = () => {
   const [search, setSearch] = useState<string>('')
