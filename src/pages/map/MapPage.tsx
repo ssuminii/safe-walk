@@ -1,7 +1,7 @@
-import { KakaoMap, SideBar } from '../../shared/ui'
+import { KakaoMap, SideBar } from '@/shared/ui'
 import { useCallback, useEffect, useState } from 'react'
 import { useSearchParams, useLocation } from 'react-router-dom'
-import type { RegionInfoType } from '../../shared/types/map'
+import type { RegionInfoType } from '@/shared/types/map'
 import { getRegionInfo, searchRegionInfoByName, searchRegionInfosByCode } from './api/map'
 
 const MapPage = () => {

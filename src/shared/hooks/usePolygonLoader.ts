@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
-import type { PolygonFeature } from '../types/polygon'
-import { getRegionLabels, type RegionLabelsParams } from '../../pages/map/api/map'
-import { getRegionPolygon } from '../../pages/map/api/polygon'
-import { REGIONS } from '../constants/region'
 import { useQueryClient } from '@tanstack/react-query'
+import { REGIONS } from '@/shared/constants/region'
+import type { PolygonFeature } from '@/shared/types/polygon'
+import { getRegionPolygon } from '@/pages/map/api/polygon'
+import { getRegionLabels, type RegionLabelsParams } from '@/pages/map/api/map'
 
 export const usePolygonLoader = () => {
   const queryClient = useQueryClient()

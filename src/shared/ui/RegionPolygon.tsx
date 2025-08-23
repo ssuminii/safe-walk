@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import proj4 from 'proj4'
-import type { PolygonFeature } from '../types/polygon'
-import { getLevel } from '../utils'
+import type { PolygonFeature } from '@/shared/types/polygon'
+import { getLevel } from '@/entities/accident/lib'
 
 interface RegionPolygonProps {
   polygon: PolygonFeature

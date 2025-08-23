@@ -1,4 +1,4 @@
-import type { RegionInfoType } from '../types/map'
+import type { RegionInfoType } from '@/shared/types/map'
 
 const RegionInfo = ({ accidentInfo }: { accidentInfo: RegionInfoType | null }) => {
   return (

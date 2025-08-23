@@ -1,4 +1,4 @@
-import Alert from '../../assets/alert.svg?react'
+import Alert from '@/assets/alert.svg?react'
 
 const EmptyState = () => {
   return (

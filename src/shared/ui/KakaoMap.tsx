@@ -1,5 +1,4 @@
 import { Map } from 'react-kakao-maps-sdk'
-import type { RegionInfoType } from '../types/map'
 import { MapOverlays, RegionPolygon } from './'
 import { useEffect } from 'react'
 import {
@@ -9,9 +8,10 @@ import {
   useMapEventHandlers,
   useMapState,
   useRegionLabels,
-} from '../hooks'
-import type { PolygonFeature } from '../types/polygon'
-import { usePolygonLoaderQuery } from '../hooks/query'
+} from '@/shared/hooks'
+import type { RegionInfoType } from '@/shared/types/map'
+import { usePolygonLoaderQuery } from '@/shared/hooks/query'
+import type { PolygonFeature } from '@/shared/types/polygon'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null

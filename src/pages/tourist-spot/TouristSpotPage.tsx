@@ -1,3 +1,9 @@
+import { TouristSideBar } from '@/shared/ui'
+
 export default function TouristSpotPage() {
-  return <div>TouristSpotPage</div>
+  return (
+    <div>
+      <TouristSideBar />
+    </div>
+  )
 }

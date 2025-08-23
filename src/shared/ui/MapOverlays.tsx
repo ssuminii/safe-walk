@@ -1,7 +1,7 @@
 import React from 'react'
 import { CustomOverlayMap } from 'react-kakao-maps-sdk'
 import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
-import type { RegionInfoType, RegionLabels } from '../types/map'
+import type { RegionInfoType, RegionLabels } from '@/shared/types/map'
 
 interface MapOverlaysProps {
   selectedAccidentId: string | null

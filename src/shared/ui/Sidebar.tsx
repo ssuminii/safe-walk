@@ -1,5 +1,5 @@
 import { AccidentInfoCard, RegionInfo, EmptyState } from './'
-import type { RegionInfoType } from '../types/map'
+import type { RegionInfoType } from '@/shared/types/map'
 import { useEffect, useRef } from 'react'
 
 interface SideBarProps {

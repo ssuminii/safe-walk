@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
-import { useRegionAccidentListQuery } from '../hooks/query'
-import type { RegionInfoType } from '../types/map'
+import { useRegionAccidentListQuery } from './query'
+import type { RegionInfoType } from '@/shared/types/map'
 
 export const useAccidentData = (
   boundsParams: { swLat: number; swLng: number; neLat: number; neLng: number } | null,

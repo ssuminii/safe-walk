@@ -1,4 +1,4 @@
-import AccidentPinIcon from '../../assets/accident-pin.svg?react'
+import AccidentPinIcon from '@/assets/accident-pin.svg?react'
 
 interface AccidentPinProps {
   accidentCount: number

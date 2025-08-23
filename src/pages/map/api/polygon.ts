@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { PolygonCollection, PolygonIndex } from '../../../shared/types/polygon'
+import type { PolygonCollection, PolygonIndex } from '@/shared/types/polygon'
 
 const BASE_URL = 'https://yunrry.github.io/safewalk-polygon-data'
 

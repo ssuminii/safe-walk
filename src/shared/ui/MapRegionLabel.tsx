@@ -1,4 +1,4 @@
-import { getLevel } from '../utils'
+import { getLevel } from '@/entities/accident/lib'
 
 interface MapRegionLabelProps {
   regionLabel: string

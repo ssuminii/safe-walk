@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { usePolygonLoader } from '../usePolygonLoader'
-import type { RegionLabelsParams } from '../../../pages/map/api/map'
-import type { PolygonFeature } from '../../types/polygon'
+import type { RegionLabelsParams } from '@/pages/map/api/map'
+import type { PolygonFeature } from '@/shared/types/polygon'
 
 export const usePolygonLoaderQuery = (params: RegionLabelsParams) => {
   const { getPolygonsInBounds } = usePolygonLoader()

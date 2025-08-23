@@ -1,4 +1,4 @@
-import AccidentSelectedPinIcon from '../../assets/accident-active-pin.svg?react'
+import AccidentSelectedPinIcon from '@/assets/accident-active-pin.svg?react'
 
 const AccidentSelectedPin = ({ accidentCount }: { accidentCount: number }) => {
   return (

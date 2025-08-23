@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
-import { getRegionLabels } from '../../pages/map/api/map'
-import type { RegionLabels } from '../types/map'
+import { getRegionLabels } from '@/pages/map/api/map'
+import type { RegionLabels } from '@/shared/types/map'
 
 export const useRegionLabels = () => {
   const [regionLabels, setRegionLabels] = useState<RegionLabels[]>([])

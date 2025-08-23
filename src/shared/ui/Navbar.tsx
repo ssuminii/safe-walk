@@ -1,5 +1,5 @@
 import { SearchBar } from './'
-import Logo from '../../assets/logo.svg?react'
+import Logo from '@/assets/logo.svg?react'
 import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
