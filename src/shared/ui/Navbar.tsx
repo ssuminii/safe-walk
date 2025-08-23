@@ -3,11 +3,16 @@ import Logo from '@/assets/logo.svg?react'
 import { NavLink } from 'react-router-dom'
 
 const Navbar = () => {
+  const searchPlaceholder =
+    location.pathname === '/tourist-spot'
+      ? '관광지 명을 입력해주세요. 예: 불국사'
+      : '동 이름을 입력해주세요.'
+
   return (
     <header className='flex py-[20px] px-6 pr-56 justify-between items-center border-b border-gray-8'>
       <div className='flex items-center gap-4'>
         <Logo className='cursor-pointer' onClick={() => (window.location.href = '/')} />
-        <SearchBar />
+        <SearchBar placeholder={searchPlaceholder} />
       </div>
       <nav className='flex gap-6'>
         <NavLink

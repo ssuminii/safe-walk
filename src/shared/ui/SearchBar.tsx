@@ -4,7 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import type { EmnSearchResult } from '@/shared/types/map'
 import { searchRegionRealTime } from '@/pages/map/api/map'
 
-const SearchBar = () => {
+interface SearchBarProps {
+  placeholder: string
+}
+
+const SearchBar = ({ placeholder }: SearchBarProps) => {
   const [search, setSearch] = useState<string>('')
   const [isOpen, setIsOpen] = useState(false)
   const [results, setResults] = useState<EmnSearchResult[]>([])
@@ -118,7 +122,7 @@ const SearchBar = () => {
       <form onSubmit={handleSubmit} className='relative'>
         <input
           ref={inputRef}
-          placeholder='동 이름을 입력해주세요.'
+          placeholder={placeholder}
           className='w-[257px] placeholder:text-gray-6 r1 border border-gray-8 py-1 px-3 rounded-full'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
