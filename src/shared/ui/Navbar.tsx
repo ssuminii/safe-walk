@@ -1,8 +1,9 @@
 import { SearchBar } from './'
 import Logo from '@/assets/logo.svg?react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 
 const Navbar = () => {
+  const location = useLocation()
   const searchPlaceholder =
     location.pathname === '/tourist-spot'
       ? '관광지 명을 입력해주세요. 예: 불국사'
