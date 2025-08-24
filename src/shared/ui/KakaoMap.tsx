@@ -58,7 +58,11 @@ const KakaoMap = ({
   const { boundsParams, updateBoundsParams } = useMapBounds()
   const { regionLabels, fetchRegionLabels } = useRegionLabels()
   const { touristSpots: hookTouristSpots, fetchTouristLabels } = useTouristLabels()
-  const { accidentList } = useAccidentData(boundsParams, mapLevel, onAccidentListChange || (() => {}))
+  const { accidentList } = useAccidentData(
+    boundsParams,
+    mapLevel,
+    onAccidentListChange || (() => {})
+  )
   const { position: currentPosition, error: locationError } = useGeolocation()
 
   // 오버레이 타입에 따라 사용할 관광지 데이터 선택 (prop으로 받은 것 우선)
@@ -178,10 +182,17 @@ const KakaoMap = ({
     }
 
     if (accident && mapRef.current) {
+      const map = mapRef.current
       const targetLatLng = new kakao.maps.LatLng(accident.point.lat, accident.point.lng)
-      mapRef.current.panTo(targetLatLng)
-      setMapLevel(4)
-      setMapCenter(accident.point)
+
+      map.setLevel(4)
+      map.panTo(targetLatLng)
+
+      setTimeout(() => {
+        setMapCenter(accident.point)
+        setMapLevel(4)
+      }, 300)
+
       setSelectedRegionId(null)
     }
   }, [selectedAccidentId, accidentInfo])
