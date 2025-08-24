@@ -9,3 +9,8 @@ export interface TouristSpotLabels {
     longitude: number
   }
 }
+
+export interface PopularTouristSpots extends TouristSpotLabels {
+  mode: string
+  rank: number
+}
