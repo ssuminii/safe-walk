@@ -67,10 +67,11 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
               lng: touristSpot.Coordinate.longitude,
             }}
             yAnchor={1}
-            zIndex={2}
+            zIndex={selectedRegionId === touristSpot.id ? 1000 : 2}
           >
             <TouristSpotLabel
               touristSpotName={touristSpot.spot_name}
+              isSelected={selectedRegionId === touristSpot.id}
               onSelect={() => onTouristSpotSelect?.(touristSpot)}
             />
           </CustomOverlayMap>
