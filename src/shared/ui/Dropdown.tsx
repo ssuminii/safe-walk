@@ -22,6 +22,8 @@ export const Dropdown = ({
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
+  const selectedLabel = value ? options.find((option) => option.value === value)?.label : null
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -38,7 +40,7 @@ export const Dropdown = ({
         onClick={() => setIsOpen(!isOpen)}
         className='w-full px-3 py-1 r1 border border-gray-7 rounded-sm bg-white flex justify-between items-center cursor-pointer'
       >
-        <span className={value ? 'text-black' : 'text-gray-5'}>{value || placeholder}</span>
+        <span className={value ? 'text-black' : 'text-gray-5'}>{selectedLabel || placeholder}</span>
         <ChevronDownIcon />
       </button>
 
@@ -48,7 +50,7 @@ export const Dropdown = ({
             <button
               key={option.value}
               onClick={() => {
-                onChange(option.label)
+                onChange(option.value)
                 setIsOpen(false)
               }}
               className='w-full px-4 py-2 text-left r1 hover:bg-gray-100 first:rounded-t-md last:rounded-b-md cursor-pointer'
