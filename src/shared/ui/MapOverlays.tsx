@@ -55,7 +55,6 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
 
       {/* 관광지 라벨 오버레이 */}
       {!selectedAccidentId &&
-        mapLevel >= 5 &&
         overlayType === 'tourist' &&
         touristSpots.length > 0 &&
         touristSpots.map((touristSpot, index) => (
@@ -63,11 +62,9 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
             key={`tourist-${index}`}
             position={{ lat: touristSpot.latitude, lng: touristSpot.longitude }}
             yAnchor={1}
-            zIndex={1}
+            zIndex={2}
           >
-            <TouristSpotLabel
-              touristSpotName={touristSpot.spot_name}
-            />
+            <TouristSpotLabel touristSpotName={touristSpot.spot_name} />
           </CustomOverlayMap>
         ))}
 
