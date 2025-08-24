@@ -19,9 +19,6 @@ export default function TouristSpotPage() {
     spot: PopularTouristSpots,
     accidentData: TouristSpotAccident
   ) => {
-    console.log('받은 관광지 데이터:', spot)
-    console.log('받은 사고 데이터:', accidentData)
-
     setMapCenter({
       lat: spot.coordinate.latitude,
       lng: spot.coordinate.longitude,
@@ -49,24 +46,14 @@ export default function TouristSpotPage() {
 
     setAccidentInfo(convertedAccidentInfo)
     setSelectedRegionId(spot.id)
-
-    console.log('convertedAccidentInfo', convertedAccidentInfo)
   }
 
   const handleTouristSpotLabelClick = async (spot: TouristSpotLabels) => {
-    console.log('관광지 라벨 클릭됨!')
-    console.log('관광지 전체 데이터:', spot)
-    console.log('관광지 ID:', spot.id)
-
-    // 선택된 사고 해제
     setSelectedAccidentId(null)
 
     try {
-      // API를 통해 사고 데이터 가져오기
       const accidentData = await getTouristSpotAccidents(spot.id)
-      console.log('라벨 클릭 - 사고 데이터:', accidentData)
 
-      // 지도 중심 좌표 설정 및 확대
       setMapCenter({
         lat: spot.Coordinate.latitude,
         lng: spot.Coordinate.longitude,
@@ -75,7 +62,6 @@ export default function TouristSpotPage() {
 
       const accidents = accidentData.accidents || []
 
-      // TouristSpotLabels + TouristSpotAccident -> RegionInfoType으로 변환
       const convertedAccidentInfo: RegionInfoType = {
         emd_CD: spot.id,
         name: spot.spot_name,
@@ -94,8 +80,6 @@ export default function TouristSpotPage() {
 
       setAccidentInfo(convertedAccidentInfo)
       setSelectedRegionId(spot.id)
-
-      console.log('라벨 클릭 - convertedAccidentInfo', convertedAccidentInfo)
     } catch (error) {
       console.error('라벨 클릭 - 사고 데이터 조회 실패:', error)
     }

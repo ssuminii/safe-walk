@@ -20,7 +20,6 @@ export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarPr
     const fetchState = async () => {
       try {
         const res = await getState(selectedProvince)
-        console.log('관광지 데이터:', res)
         setTouristData(res)
       } catch (error) {
         console.error(error)
@@ -34,7 +33,6 @@ export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarPr
   const handleSpotClick = async (spot: PopularTouristSpots) => {
     try {
       const accidentData = await getTouristSpotAccidents(spot.id)
-      console.log('선택된 관광지의 사고 데이터:', accidentData)
       onTouristSpotSelect?.(spot, accidentData)
     } catch (error) {
       console.error('사고 데이터 조회 실패:', error)
