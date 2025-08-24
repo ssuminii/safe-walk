@@ -177,9 +177,11 @@ const KakaoMap = ({
       }
     }
 
-    if (accident) {
-      setMapCenter(accident.point)
+    if (accident && mapRef.current) {
+      const targetLatLng = new kakao.maps.LatLng(accident.point.lat, accident.point.lng)
+      mapRef.current.panTo(targetLatLng)
       setMapLevel(4)
+      setMapCenter(accident.point)
       setSelectedRegionId(null)
     }
   }, [selectedAccidentId, accidentInfo])
