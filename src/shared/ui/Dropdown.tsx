@@ -36,7 +36,7 @@ export const Dropdown = ({
     <div className='relative' ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='w-full px-3 py-1 r1 border border-gray-7 rounded-sm bg-white flex justify-between items-center'
+        className='w-full px-3 py-1 r1 border border-gray-7 rounded-sm bg-white flex justify-between items-center cursor-pointer'
       >
         <span className={value ? 'text-black' : 'text-gray-5'}>{value || placeholder}</span>
         <ChevronDownIcon />
@@ -51,7 +51,7 @@ export const Dropdown = ({
                 onChange(option.label)
                 setIsOpen(false)
               }}
-              className='w-full px-4 py-2 text-left r1 hover:bg-gray-100 first:rounded-t-md last:rounded-b-md'
+              className='w-full px-4 py-2 text-left r1 hover:bg-gray-100 first:rounded-t-md last:rounded-b-md cursor-pointer'
             >
               {option.label}
             </button>
