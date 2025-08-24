@@ -1,6 +1,6 @@
 interface TouristSpotLabelProps {
   touristSpotName: string
-  onSelect: () => void
+  onSelect?: () => void
 }
 
 export default function TouristSpotLabel({ touristSpotName, onSelect }: TouristSpotLabelProps) {

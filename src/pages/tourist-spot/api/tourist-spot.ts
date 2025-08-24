@@ -1,15 +1,15 @@
 import type { RegionLabelsParams } from '@/pages/map/api/map'
 import { apiClient } from '@/shared/lib/apiClient'
-import type { RegionLabels } from '@/shared/types/map'
+import type { TouristSpotLabels } from '@/shared/types/tourist-spot'
 
 // 지도 영역 관광지 조회
-export const getTouristSpot = async ({
+export const getTouristSpots = async ({
   swLat,
   swLng,
   neLat,
   neLng,
-}: RegionLabelsParams): Promise<RegionLabels[]> => {
-  const response = await apiClient.get<RegionLabels[]>('/tourist-spot', {
+}: RegionLabelsParams): Promise<TouristSpotLabels[]> => {
+  const response = await apiClient.get<TouristSpotLabels[]>('/tourist-spots', {
     params: { swLat, swLng, neLat, neLng },
   })
   return response.data

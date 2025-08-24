@@ -8,10 +8,14 @@ import {
   useMapEventHandlers,
   useMapState,
   useRegionLabels,
+  useTouristLabels,
 } from '@/shared/hooks'
 import type { RegionInfoType } from '@/shared/types/map'
+import type { TouristSpotLabels } from '@/shared/types/tourist-spot'
 import { usePolygonLoaderQuery } from '@/shared/hooks/query'
 import type { PolygonFeature } from '@/shared/types/polygon'
+
+type MapOverlayType = 'region' | 'tourist'
 
 interface KakaoMapProps {
   accidentInfo: RegionInfoType | null
@@ -19,9 +23,11 @@ interface KakaoMapProps {
   selectedAccidentId: string | null
   onSelectAccident: (accidentId: string | null) => void
   searchMapCenter: { lat: number; lng: number } | null
-  onAccidentListChange: (list: RegionInfoType[]) => void
+  onAccidentListChange?: (list: RegionInfoType[]) => void
   searchedRegionId?: string | null
   useCurrentLocation?: boolean
+  overlayType?: MapOverlayType
+  touristSpots?: TouristSpotLabels[]
 }
 
 const KakaoMap = ({
@@ -33,6 +39,8 @@ const KakaoMap = ({
   onAccidentListChange,
   searchedRegionId,
   useCurrentLocation = true,
+  overlayType = 'region',
+  touristSpots = [],
 }: KakaoMapProps) => {
   const {
     mapCenter,
@@ -49,12 +57,19 @@ const KakaoMap = ({
 
   const { boundsParams, updateBoundsParams } = useMapBounds()
   const { regionLabels, fetchRegionLabels } = useRegionLabels()
-  const { accidentList } = useAccidentData(boundsParams, mapLevel, onAccidentListChange)
+  const { touristSpots: hookTouristSpots, fetchTouristLabels } = useTouristLabels()
+  const { accidentList } = useAccidentData(boundsParams, mapLevel, onAccidentListChange || (() => {}))
   const { position: currentPosition, error: locationError } = useGeolocation()
+
+  // 오버레이 타입에 따라 사용할 관광지 데이터 선택 (prop으로 받은 것 우선)
+  const finalTouristSpots = touristSpots.length > 0 ? touristSpots : hookTouristSpots
 
   const { data: allPolygons = [] } = usePolygonLoaderQuery(
     boundsParams ?? { swLat: 0, swLng: 0, neLat: 0, neLng: 0 }
   )
+
+  // 오버레이 타입에 따른 라벨 페치 함수 선택
+  const fetchLabels = overlayType === 'tourist' ? fetchTouristLabels : fetchRegionLabels
 
   const { handleRegionSelect, handleAccidentPinClick, handleZoomChanged, handleCenterChanged } =
     useMapEventHandlers({
@@ -65,7 +80,7 @@ const KakaoMap = ({
       setMapCenter,
       isSearchMove,
       setIsSearchMove,
-      fetchRegionLabels,
+      fetchRegionLabels: fetchLabels,
       updateBoundsParams,
     })
 
@@ -103,7 +118,7 @@ const KakaoMap = ({
 
       setTimeout(() => {
         if (mapRef.current) {
-          fetchRegionLabels(mapRef.current)
+          fetchLabels(mapRef.current)
           updateBoundsParams(mapRef.current)
         }
       }, 200)
@@ -114,7 +129,7 @@ const KakaoMap = ({
     useCurrentLocation,
     locationError,
     searchMapCenter,
-    fetchRegionLabels,
+    fetchLabels,
     updateBoundsParams,
   ])
 
@@ -132,7 +147,7 @@ const KakaoMap = ({
       setSelectedRegionId(searchedRegionId)
     }
 
-    fetchRegionLabels(map)
+    fetchLabels(map)
     updateBoundsParams(map)
 
     setMapCenter(searchMapCenter)
@@ -140,7 +155,7 @@ const KakaoMap = ({
     searchMapCenter,
     searchedRegionId,
     setSelectedRegionId,
-    fetchRegionLabels,
+    fetchLabels,
     updateBoundsParams,
     setMapCenter,
   ])
@@ -183,7 +198,7 @@ const KakaoMap = ({
 
         mapRef.current = map
         if (map.getLevel() >= 6) {
-          fetchRegionLabels(map)
+          fetchLabels(map)
           updateBoundsParams(map)
         }
       }}
@@ -203,6 +218,8 @@ const KakaoMap = ({
         accidentInfo={accidentInfo}
         onRegionSelect={handleRegionSelect}
         onAccidentPinClick={handleAccidentPinClick}
+        overlayType={overlayType}
+        touristSpots={finalTouristSpots}
       />
     </Map>
   )

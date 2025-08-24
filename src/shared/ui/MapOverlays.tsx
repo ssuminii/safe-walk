@@ -1,7 +1,10 @@
 import React from 'react'
 import { CustomOverlayMap } from 'react-kakao-maps-sdk'
-import { AccidentPin, AccidentSelectedPin, MapRegionLabel } from './'
+import { AccidentPin, AccidentSelectedPin, MapRegionLabel, TouristSpotLabel } from './'
 import type { RegionInfoType, RegionLabels } from '@/shared/types/map'
+import type { TouristSpotLabels } from '@/shared/types/tourist-spot'
+
+type OverlayType = 'region' | 'tourist'
 
 interface MapOverlaysProps {
   selectedAccidentId: string | null
@@ -12,6 +15,8 @@ interface MapOverlaysProps {
   accidentInfo: RegionInfoType | null
   onRegionSelect: (regionId: string) => void
   onAccidentPinClick: (accidentId: string) => void
+  overlayType?: OverlayType
+  touristSpots?: TouristSpotLabels[]
 }
 
 export const MapOverlays: React.FC<MapOverlaysProps> = ({
@@ -23,12 +28,15 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
   accidentInfo,
   onRegionSelect,
   onAccidentPinClick,
+  overlayType = 'region',
+  touristSpots = [],
 }) => {
   return (
     <>
       {/* 지역 라벨 오버레이 */}
       {!selectedAccidentId &&
         mapLevel >= 5 &&
+        overlayType === 'region' &&
         regionLabels.length > 0 &&
         regionLabels.map((regionLabel) => (
           <CustomOverlayMap
@@ -41,6 +49,24 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
               regionLabel={regionLabel.name}
               accidentCount={regionLabel.totalAccident}
               onSelect={() => onRegionSelect(regionLabel.EMD_CD)}
+            />
+          </CustomOverlayMap>
+        ))}
+
+      {/* 관광지 라벨 오버레이 */}
+      {!selectedAccidentId &&
+        mapLevel >= 5 &&
+        overlayType === 'tourist' &&
+        touristSpots.length > 0 &&
+        touristSpots.map((touristSpot, index) => (
+          <CustomOverlayMap
+            key={`tourist-${index}`}
+            position={{ lat: touristSpot.latitude, lng: touristSpot.longitude }}
+            yAnchor={1}
+            zIndex={1}
+          >
+            <TouristSpotLabel
+              touristSpotName={touristSpot.spot_name}
             />
           </CustomOverlayMap>
         ))}
