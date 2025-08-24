@@ -7,16 +7,16 @@ export interface TouristTableProps {
 
 export const TouristSpotTable = ({ data, onSpotClick }: TouristTableProps) => {
   return (
-    <div className='border border-gray-7 border-sm overflow-hidden h-full'>
+    <div className='border border-gray-7 border-sm overflow-hidden h-full flex flex-col'>
       {/* header */}
-      <div className='bg-[#F2F3F5] grid grid-cols-12 py-3 px-4 border-b border-gray-7 m1 text-center'>
+      <div className='bg-[#F2F3F5] grid grid-cols-12 py-3 px-4 border-b border-gray-7 m1 text-center flex-shrink-0'>
         <div className='col-span-2'>순위</div>
         <div className='col-span-8'>이름</div>
         <div className='col-span-2'>-</div>
       </div>
 
       {/* body */}
-      <div className='bg-white max-h-[400px] overflow-y-auto'>
+      <div className='bg-white flex-1 overflow-y-auto'>
         {data.map((spot) => (
           <div
             key={spot.id}
@@ -25,7 +25,7 @@ export const TouristSpotTable = ({ data, onSpotClick }: TouristTableProps) => {
             <div className='col-span-2'>{spot.rank}</div>
             <div className='col-span-8'>{spot.spot_name}</div>
             <div className='col-span-2'>
-              <button 
+              <button
                 className='text-[10px] cursor-pointer hover:text-primary transition-colors'
                 onClick={() => onSpotClick?.(spot)}
               >

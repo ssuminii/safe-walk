@@ -54,7 +54,7 @@ export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarPr
           placeholder='광역시/도'
         />
       </header>
-      <div className='flex-1 mb-2'>
+      <div className='flex-1 mb-2 min-h-0'>
         {!selectedProvince ? (
           <div className='flex flex-col gap-3 justify-center items-center h-full border border-gray-7'>
             <Alert />
