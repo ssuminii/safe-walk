@@ -29,6 +29,7 @@ interface KakaoMapProps {
   overlayType?: MapOverlayType
   touristSpots?: TouristSpotLabels[]
   onTouristSpotSelect?: (touristSpot: TouristSpotLabels) => void
+  searchMapLevel?: number
 }
 
 const KakaoMap = ({
@@ -43,6 +44,7 @@ const KakaoMap = ({
   overlayType = 'region',
   touristSpots = [],
   onTouristSpotSelect,
+  searchMapLevel = 7,
 }: KakaoMapProps) => {
   const {
     mapCenter,
@@ -147,7 +149,7 @@ const KakaoMap = ({
     const targetLatLng = new kakao.maps.LatLng(searchMapCenter.lat, searchMapCenter.lng)
 
     map.setCenter(targetLatLng)
-    map.setLevel(7)
+    map.setLevel(searchMapLevel)
 
     if (searchedRegionId) {
       setSelectedRegionId(searchedRegionId)

@@ -13,6 +13,7 @@ export default function TouristSpotPage() {
   const [selectedAccidentId, setSelectedAccidentId] = useState<string | null>(null)
   const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
+  const [mapLevel, setMapLevel] = useState<number>(7)
 
   const handleTouristSpotSelect = (
     spot: PopularTouristSpots,
@@ -25,6 +26,7 @@ export default function TouristSpotPage() {
       lat: spot.coordinate.latitude,
       lng: spot.coordinate.longitude,
     })
+    setMapLevel(4)
 
     const accidents = accidentData.accidents || []
 
@@ -61,11 +63,12 @@ export default function TouristSpotPage() {
       const accidentData = await getTouristSpotAccidents(spot.id)
       console.log('라벨 클릭 - 사고 데이터:', accidentData)
 
-      // 지도 중심 좌표 설정
+      // 지도 중심 좌표 설정 및 확대
       setMapCenter({
         lat: spot.Coordinate.latitude,
         lng: spot.Coordinate.longitude,
       })
+      setMapLevel(4)
 
       const accidents = accidentData.accidents || []
 
@@ -116,6 +119,7 @@ export default function TouristSpotPage() {
         searchedRegionId={selectedRegionId}
         overlayType='tourist'
         onTouristSpotSelect={handleTouristSpotLabelClick}
+        searchMapLevel={mapLevel}
       />
     </div>
   )
