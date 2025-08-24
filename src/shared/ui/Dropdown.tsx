@@ -48,7 +48,7 @@ export const Dropdown = ({
             <button
               key={option.value}
               onClick={() => {
-                onChange(option.value)
+                onChange(option.label)
                 setIsOpen(false)
               }}
               className='w-full px-4 py-2 text-left r1 hover:bg-gray-100 first:rounded-t-md last:rounded-b-md'
