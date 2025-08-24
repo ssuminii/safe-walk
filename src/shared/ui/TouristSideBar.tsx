@@ -3,17 +3,16 @@ import Alert from '@/assets/alert.svg?react'
 import { useEffect, useState } from 'react'
 import { TouristSpotTable } from '@/shared/ui/TouristSpotTable'
 import { PROVINCES } from '@/shared/constants/provinces'
-import { getState } from '@/pages/tourist-spot/api/tourist-spot'
-import type { PopularTouristSpots } from '@/shared/types/tourist-spot'
+import { getState, getTouristSpotAccidents } from '@/pages/tourist-spot/api/tourist-spot'
+import type { PopularTouristSpots, TouristSpotAccident } from '@/shared/types/tourist-spot'
 
-export default function TouristSideBar() {
+interface TouristSideBarProps {
+  onTouristSpotSelect?: (spot: PopularTouristSpots, accidentData: TouristSpotAccident) => void
+}
+
+export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarProps) {
   const [selectedProvince, setSelectedProvince] = useState<string | null>(null)
   const [touristData, setTouristData] = useState<PopularTouristSpots[]>([])
-
-  const handleProvinceChange = (value: string) => {
-    setSelectedProvince(value)
-    console.log('선택된 지역:', value)
-  }
 
   useEffect(() => {
     if (!selectedProvince) return
@@ -32,6 +31,16 @@ export default function TouristSideBar() {
     fetchState()
   }, [selectedProvince])
 
+  const handleSpotClick = async (spot: PopularTouristSpots) => {
+    try {
+      const accidentData = await getTouristSpotAccidents(spot.id)
+      console.log('선택된 관광지의 사고 데이터:', accidentData)
+      onTouristSpotSelect?.(spot, accidentData)
+    } catch (error) {
+      console.error('사고 데이터 조회 실패:', error)
+    }
+  }
+
   return (
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px]'>
       <header className='flex flex-col gap-[7px]'>
@@ -39,7 +48,9 @@ export default function TouristSideBar() {
         <Dropdown
           options={PROVINCES}
           value={selectedProvince}
-          onChange={handleProvinceChange}
+          onChange={(value: string) => {
+            setSelectedProvince(value)
+          }}
           placeholder='광역시/도'
         />
       </header>
@@ -53,7 +64,7 @@ export default function TouristSideBar() {
             </p>
           </div>
         ) : (
-          <TouristSpotTable data={touristData} />
+          <TouristSpotTable data={touristData} onSpotClick={handleSpotClick} />
         )}
       </div>
     </div>

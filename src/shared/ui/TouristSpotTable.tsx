@@ -2,9 +2,10 @@ import type { PopularTouristSpots } from '@/shared/types/tourist-spot'
 
 export interface TouristTableProps {
   data: PopularTouristSpots[]
+  onSpotClick?: (spot: PopularTouristSpots) => void
 }
 
-export const TouristSpotTable = ({ data }: TouristTableProps) => {
+export const TouristSpotTable = ({ data, onSpotClick }: TouristTableProps) => {
   return (
     <div className='border border-gray-7 border-sm overflow-hidden h-full'>
       {/* header */}
@@ -24,7 +25,10 @@ export const TouristSpotTable = ({ data }: TouristTableProps) => {
             <div className='col-span-2'>{spot.rank}</div>
             <div className='col-span-8'>{spot.spot_name}</div>
             <div className='col-span-2'>
-              <button className='text-[10px] cursor-pointer hover:text-primary transition-colors'>
+              <button 
+                className='text-[10px] cursor-pointer hover:text-primary transition-colors'
+                onClick={() => onSpotClick?.(spot)}
+              >
                 더보기
               </button>
             </div>
