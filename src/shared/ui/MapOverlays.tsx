@@ -17,6 +17,7 @@ interface MapOverlaysProps {
   onAccidentPinClick: (accidentId: string) => void
   overlayType?: OverlayType
   touristSpots?: TouristSpotLabels[]
+  onTouristSpotSelect?: (touristSpot: TouristSpotLabels) => void
 }
 
 export const MapOverlays: React.FC<MapOverlaysProps> = ({
@@ -30,6 +31,7 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
   onAccidentPinClick,
   overlayType = 'region',
   touristSpots = [],
+  onTouristSpotSelect,
 }) => {
   return (
     <>
@@ -57,14 +59,20 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
       {!selectedAccidentId &&
         overlayType === 'tourist' &&
         touristSpots.length > 0 &&
-        touristSpots.map((touristSpot, index) => (
+        touristSpots.map((touristSpot) => (
           <CustomOverlayMap
-            key={`tourist-${index}`}
-            position={{ lat: touristSpot.latitude, lng: touristSpot.longitude }}
+            key={touristSpot.id}
+            position={{
+              lat: touristSpot.Coordinate.latitude,
+              lng: touristSpot.Coordinate.longitude,
+            }}
             yAnchor={1}
             zIndex={2}
           >
-            <TouristSpotLabel touristSpotName={touristSpot.spot_name} />
+            <TouristSpotLabel
+              touristSpotName={touristSpot.spot_name}
+              onSelect={() => onTouristSpotSelect?.(touristSpot)}
+            />
           </CustomOverlayMap>
         ))}
 

@@ -28,6 +28,7 @@ interface KakaoMapProps {
   useCurrentLocation?: boolean
   overlayType?: MapOverlayType
   touristSpots?: TouristSpotLabels[]
+  onTouristSpotSelect?: (touristSpot: TouristSpotLabels) => void
 }
 
 const KakaoMap = ({
@@ -41,6 +42,7 @@ const KakaoMap = ({
   useCurrentLocation = true,
   overlayType = 'region',
   touristSpots = [],
+  onTouristSpotSelect,
 }: KakaoMapProps) => {
   const {
     mapCenter,
@@ -233,6 +235,7 @@ const KakaoMap = ({
         onAccidentPinClick={handleAccidentPinClick}
         overlayType={overlayType}
         touristSpots={finalTouristSpots}
+        onTouristSpotSelect={onTouristSpotSelect}
       />
     </Map>
   )

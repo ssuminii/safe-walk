@@ -1,7 +1,11 @@
 export interface TouristSpotLabels {
+  id: string
   spot_name: string
   sido_name: string
   sigungu_name: string
-  latitude: number
-  longitude: number
+  category: string
+  Coordinate: {
+    latitude: number
+    longitude: number
+  }
 }
