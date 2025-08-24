@@ -56,8 +56,7 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
         ))}
 
       {/* 관광지 라벨 오버레이 */}
-      {!selectedAccidentId &&
-        overlayType === 'tourist' &&
+      {overlayType === 'tourist' &&
         touristSpots.length > 0 &&
         touristSpots.map((touristSpot) => (
           <CustomOverlayMap
