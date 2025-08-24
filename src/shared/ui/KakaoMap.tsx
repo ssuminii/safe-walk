@@ -207,8 +207,21 @@ const KakaoMap = ({
       style={{ width: '100%', height: 'calc(100dvh - 75px)' }}
       className='flex-3'
       level={mapLevel}
-      onBoundsChanged={handleZoomChanged}
-      onCenterChanged={handleCenterChanged}
+      onBoundsChanged={(map) => {
+        const currentLevel = map.getLevel()
+        const prevLevel = mapLevel
+
+        handleZoomChanged(map)
+
+        // 관광지 페이지에서 줌아웃 시에만 라벨 업데이트 (레벨 6 이상으로 줌아웃할 때)
+        if (overlayType === 'tourist' && currentLevel >= 5 && prevLevel < 7) {
+          fetchLabels(map)
+          updateBoundsParams(map)
+        }
+      }}
+      onCenterChanged={(map) => {
+        handleCenterChanged(map)
+      }}
       onCreate={(map) => {
         if (hasInitializedMapRef.current) return
         hasInitializedMapRef.current = true

@@ -58,6 +58,9 @@ export default function TouristSpotPage() {
     console.log('관광지 전체 데이터:', spot)
     console.log('관광지 ID:', spot.id)
 
+    // 선택된 사고 해제
+    setSelectedAccidentId(null)
+
     try {
       // API를 통해 사고 데이터 가져오기
       const accidentData = await getTouristSpotAccidents(spot.id)
