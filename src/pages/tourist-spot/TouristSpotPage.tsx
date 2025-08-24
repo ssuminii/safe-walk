@@ -1,7 +1,12 @@
 import { KakaoMap, SideBar, TouristSideBar } from '@/shared/ui'
 import { useState } from 'react'
 import type { RegionInfoType } from '@/shared/types/map'
-import type { PopularTouristSpots, TouristSpotAccident, TouristSpotLabels } from '@/shared/types/tourist-spot'
+import type {
+  PopularTouristSpots,
+  TouristSpotAccident,
+  TouristSpotLabels,
+} from '@/shared/types/tourist-spot'
+import { getTouristSpotAccidents } from '@/pages/tourist-spot/api/tourist-spot'
 
 export default function TouristSpotPage() {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null)
@@ -46,11 +51,48 @@ export default function TouristSpotPage() {
     console.log('convertedAccidentInfo', convertedAccidentInfo)
   }
 
-  const handleTouristSpotLabelClick = (spot: TouristSpotLabels) => {
+  const handleTouristSpotLabelClick = async (spot: TouristSpotLabels) => {
     console.log('관광지 라벨 클릭됨!')
     console.log('관광지 전체 데이터:', spot)
     console.log('관광지 ID:', spot.id)
-    console.log('관광지 이름:', spot.spot_name)
+
+    try {
+      // API를 통해 사고 데이터 가져오기
+      const accidentData = await getTouristSpotAccidents(spot.id)
+      console.log('라벨 클릭 - 사고 데이터:', accidentData)
+
+      // 지도 중심 좌표 설정
+      setMapCenter({
+        lat: spot.Coordinate.latitude,
+        lng: spot.Coordinate.longitude,
+      })
+
+      const accidents = accidentData.accidents || []
+
+      // TouristSpotLabels + TouristSpotAccident -> RegionInfoType으로 변환
+      const convertedAccidentInfo: RegionInfoType = {
+        emd_CD: spot.id,
+        name: spot.spot_name,
+        totalAccident: accidentData.totalAccident || 0,
+        accidents: Array.from(accidents).map((accident) => ({
+          id: accident.id,
+          location: accident.location,
+          accidentCount: accident.accidentCount,
+          casualties: accident.casualties,
+          point: {
+            lat: accident.point?.latitude || 0,
+            lng: accident.point?.longitude || 0,
+          },
+        })),
+      }
+
+      setAccidentInfo(convertedAccidentInfo)
+      setSelectedRegionId(spot.id)
+
+      console.log('라벨 클릭 - convertedAccidentInfo', convertedAccidentInfo)
+    } catch (error) {
+      console.error('라벨 클릭 - 사고 데이터 조회 실패:', error)
+    }
   }
 
   return (
