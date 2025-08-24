@@ -4,15 +4,24 @@ export interface TouristSpotLabels {
   sido_name: string
   sigungu_name: string
   category: string
-  coordinate: {
+  Coordinate: {
     latitude: number
     longitude: number
   }
 }
 
-export interface PopularTouristSpots extends TouristSpotLabels {
+export interface PopularTouristSpots {
+  id: string
   mode: string
   rank: number
+  spot_name: string
+  sido_name: string
+  sigungu_name: string
+  category: string
+  coordinate: {
+    latitude: number
+    longitude: number
+  }
 }
 
 export interface TouristSpotAccident {
