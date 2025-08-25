@@ -7,11 +7,28 @@ import { getState, getTouristSpotAccidents } from '@/pages/tourist-spot/api/tour
 import type { PopularTouristSpots, TouristSpotAccident } from '@/shared/types/tourist-spot'
 
 interface TouristSideBarProps {
-  onTouristSpotSelect?: (spot: PopularTouristSpots, accidentData: TouristSpotAccident) => void
+  onTouristSpotSelect?: (
+    spot: PopularTouristSpots,
+    accidentData: TouristSpotAccident,
+    provinceCode?: string
+  ) => void
+  selectedProvince?: string | null
+  onProvinceChange?: (province: string | null) => void
 }
 
-export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarProps) {
-  const [selectedProvince, setSelectedProvince] = useState<string | null>(null)
+export default function TouristSideBar({
+  onTouristSpotSelect,
+  selectedProvince: externalSelectedProvince,
+  onProvinceChange,
+}: TouristSideBarProps) {
+  const [selectedProvince, setSelectedProvince] = useState<string | null>(
+    externalSelectedProvince || null
+  )
+
+  useEffect(() => {
+    setSelectedProvince(externalSelectedProvince || null)
+  }, [externalSelectedProvince])
+
   const [touristData, setTouristData] = useState<PopularTouristSpots[]>([])
 
   useEffect(() => {
@@ -33,7 +50,7 @@ export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarPr
   const handleSpotClick = async (spot: PopularTouristSpots) => {
     try {
       const accidentData = await getTouristSpotAccidents(spot.id)
-      onTouristSpotSelect?.(spot, accidentData)
+      onTouristSpotSelect?.(spot, accidentData, selectedProvince || undefined)
     } catch (error) {
       console.error('사고 데이터 조회 실패:', error)
     }
@@ -48,6 +65,7 @@ export default function TouristSideBar({ onTouristSpotSelect }: TouristSideBarPr
           value={selectedProvince}
           onChange={(value: string) => {
             setSelectedProvince(value)
+            onProvinceChange?.(value)
           }}
           placeholder='광역시/도'
         />

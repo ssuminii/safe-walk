@@ -19,11 +19,28 @@ export default function TouristSpotPage() {
   const [accidentInfo, setAccidentInfo] = useState<RegionInfoType | null>(null)
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number } | null>(null)
   const [mapLevel, setMapLevel] = useState<number>(7)
+  const [selectedProvince, setSelectedProvince] = useState<string | null>(null)
 
   const handleTouristSpotSelect = (
     spot: PopularTouristSpots,
-    accidentData: TouristSpotAccident
+    accidentData: TouristSpotAccident,
+    provinceCode?: string
   ) => {
+    if (provinceCode) {
+      setSelectedProvince(provinceCode)
+    }
+
+    // 브라우저 히스토리에 현재 상태 저장 (뒤로가기용)
+    window.history.pushState(
+      {
+        view: 'touristSpotDetail',
+        spotId: spot.id,
+        selectedProvince: provinceCode || selectedProvince,
+      },
+      '',
+      `/tourist-spot?spotId=${spot.id}&q=${encodeURIComponent(spot.spot_name)}`
+    )
+
     setMapCenter({
       lat: spot.coordinate.latitude,
       lng: spot.coordinate.longitude,
@@ -99,12 +116,10 @@ export default function TouristSpotPage() {
       // spotId가 있으면 먼저 관광지 정보를 검색으로 찾아서 좌표를 얻고, 사고 데이터 조회
       const handleSearchedSpot = async () => {
         try {
-          // 검색으로 관광지 정보 가져오기 (좌표 정보 포함)
           const searchResults = await searchTouristSpotRealTime(query)
           const foundSpot = searchResults.find((spot) => spot.spotId === spotId)
 
           if (foundSpot) {
-            // 지도 중심 설정 (검색 결과의 좌표 사용)
             setMapCenter({
               lat: foundSpot.Coordinate.latitude,
               lng: foundSpot.Coordinate.longitude,
@@ -142,6 +157,24 @@ export default function TouristSpotPage() {
     }
   }, [searchParams])
 
+  // 관광지 선택 해제 선택된 지역 유지
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      setAccidentInfo(null)
+      setSelectedRegionId(null)
+      setSelectedAccidentId(null)
+      setMapCenter(null)
+      setMapLevel(7)
+
+      if (event.state?.selectedProvince) {
+        setSelectedProvince(event.state.selectedProvince)
+      }
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
   return (
     <div className='flex flex-1 h-[calc(100dvh-75px)]'>
       {accidentInfo ? (
@@ -152,7 +185,11 @@ export default function TouristSpotPage() {
           accidentList={[]}
         />
       ) : (
-        <TouristSideBar onTouristSpotSelect={handleTouristSpotSelect} />
+        <TouristSideBar
+          onTouristSpotSelect={handleTouristSpotSelect}
+          selectedProvince={selectedProvince}
+          onProvinceChange={setSelectedProvince}
+        />
       )}
       <KakaoMap
         accidentInfo={accidentInfo}
