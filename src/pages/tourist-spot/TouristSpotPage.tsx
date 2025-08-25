@@ -163,7 +163,6 @@ export default function TouristSpotPage() {
       setAccidentInfo(null)
       setSelectedRegionId(null)
       setSelectedAccidentId(null)
-      setMapCenter(null)
       setMapLevel(7)
 
       if (event.state?.selectedProvince) {
