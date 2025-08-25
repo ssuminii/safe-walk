@@ -2,6 +2,7 @@ import type { RegionLabelsParams } from '@/pages/map/api/map'
 import { apiClient } from '@/shared/lib/apiClient'
 import type {
   PopularTouristSpots,
+  SearchTouristSpotResponse,
   TouristSpotAccident,
   TouristSpotLabels,
 } from '@/shared/types/tourist-spot'
@@ -36,5 +37,18 @@ export const getState = async (
 // 관광지 반경 사고 조회
 export const getTouristSpotAccidents = async (spotId: string): Promise<TouristSpotAccident> => {
   const response = await apiClient.get<TouristSpotAccident>(`/tourist-spots/${spotId}`)
+  return response.data
+}
+
+// 실시간 검색
+export const searchTouristSpotRealTime = async (
+  query: string
+): Promise<SearchTouristSpotResponse[]> => {
+  const response = await apiClient.get<SearchTouristSpotResponse[]>(
+    '/tourist-spots/search/realtime',
+    {
+      params: { query },
+    }
+  )
   return response.data
 }

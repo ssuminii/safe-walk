@@ -77,7 +77,7 @@ export const MapOverlays: React.FC<MapOverlaysProps> = ({
         ))}
 
       {/* 사고 핀 오버레이 */}
-      {mapLevel < 5 &&
+      {(overlayType === 'tourist' ? mapLevel < 6 : mapLevel < 5) &&
         accidentList
           ?.filter((region) => region?.accidents?.length)
           .flatMap((region) =>

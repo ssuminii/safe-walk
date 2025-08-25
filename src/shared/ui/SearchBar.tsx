@@ -2,16 +2,21 @@ import { useEffect, useRef, useState } from 'react'
 import SearchIcon from '@/assets/search.svg?react'
 import { useNavigate } from 'react-router-dom'
 import type { EmnSearchResult } from '@/shared/types/map'
+import type { SearchTouristSpotResponse } from '@/shared/types/tourist-spot'
 import { searchRegionRealTime } from '@/pages/map/api/map'
+import { searchTouristSpotRealTime } from '@/pages/tourist-spot/api/tourist-spot'
+
+type SearchType = 'region' | 'tourist'
 
 interface SearchBarProps {
   placeholder: string
+  searchType?: SearchType
 }
 
-const SearchBar = ({ placeholder }: SearchBarProps) => {
+const SearchBar = ({ placeholder, searchType = 'region' }: SearchBarProps) => {
   const [search, setSearch] = useState<string>('')
   const [isOpen, setIsOpen] = useState(false)
-  const [results, setResults] = useState<EmnSearchResult[]>([])
+  const [results, setResults] = useState<EmnSearchResult[] | SearchTouristSpotResponse[]>([])
   const [selectedIndex, setSelectedIndex] = useState(-1)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -28,9 +33,12 @@ const SearchBar = ({ placeholder }: SearchBarProps) => {
         setError(null)
 
         try {
-          const searchResults = await searchRegionRealTime(search)
+          const searchResults =
+            searchType === 'region'
+              ? await searchRegionRealTime(search)
+              : await searchTouristSpotRealTime(search)
           setResults(searchResults)
-          setIsOpen(searchResults.length >= 0)
+          setIsOpen(searchResults.length > 0)
           setSelectedIndex(-1)
         } catch (err) {
           console.error('검색 실패:', err)
@@ -51,7 +59,7 @@ const SearchBar = ({ placeholder }: SearchBarProps) => {
     // 300ms 후에 검색 실행
     const timer = setTimeout(searchLocations, 300)
     return () => clearTimeout(timer)
-  }, [search])
+  }, [search, searchType])
 
   // 외부 클릭 시 드롭다운 닫기
   useEffect(() => {
@@ -81,12 +89,22 @@ const SearchBar = ({ placeholder }: SearchBarProps) => {
     }
   }
 
-  const handleSelectLocation = (location: EmnSearchResult) => {
-    setSearch(location.eupMyeonDong)
-    setIsOpen(false)
-    setSelectedIndex(-1)
-
-    navigate(`?q=${encodeURIComponent(location.eupMyeonDong)}&code=${location.code}`)
+  const handleSelectLocation = (location: EmnSearchResult | SearchTouristSpotResponse) => {
+    if (searchType === 'region') {
+      const regionLocation = location as EmnSearchResult
+      setSearch(regionLocation.eupMyeonDong)
+      setIsOpen(false)
+      setSelectedIndex(-1)
+      navigate(`?q=${encodeURIComponent(regionLocation.eupMyeonDong)}&code=${regionLocation.code}`)
+    } else {
+      const touristLocation = location as SearchTouristSpotResponse
+      setSearch(touristLocation.spot_name)
+      setIsOpen(false)
+      setSelectedIndex(-1)
+      navigate(
+        `?q=${encodeURIComponent(touristLocation.spot_name)}&spotId=${touristLocation.spotId}`
+      )
+    }
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -147,27 +165,43 @@ const SearchBar = ({ placeholder }: SearchBarProps) => {
           {error ? (
             <div className='text-sm p-2 text-center text-red-500'>{error}</div>
           ) : results.length > 0 ? (
-            results.map((location, index) => (
-              <div
-                key={location.code}
-                onClick={() => handleSelectLocation(location)}
-                className={`p-3 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors ${
-                  selectedIndex === index ? 'bg-blue-50' : ''
-                }`}
-                onMouseEnter={() => setSelectedIndex(index)}
-              >
-                <div className='flex items-center justify-between'>
-                  <div>
-                    <span className='text-sm text-gray-500'>
-                      {location.sido} {location.sigungu}
-                    </span>
-                    <span className='text-sm font-medium text-gray-900 ml-2'>
-                      {location.eupMyeonDong}
-                    </span>
+            results.map((location, index) => {
+              const key =
+                searchType === 'region'
+                  ? (location as EmnSearchResult).code
+                  : (location as SearchTouristSpotResponse).spotId
+
+              return (
+                <div
+                  key={key}
+                  onClick={() => handleSelectLocation(location)}
+                  className={`p-3 cursor-pointer border-b border-gray-100 last:border-b-0 hover:bg-gray-50 transition-colors ${
+                    selectedIndex === index ? 'bg-blue-50' : ''
+                  }`}
+                  onMouseEnter={() => setSelectedIndex(index)}
+                >
+                  <div className='flex items-center justify-between'>
+                    <div>
+                      {searchType === 'region' ? (
+                        <>
+                          <span className='text-sm text-gray-500'>
+                            {(location as EmnSearchResult).sido}{' '}
+                            {(location as EmnSearchResult).sigungu}
+                          </span>
+                          <span className='text-sm font-medium text-gray-900 ml-2'>
+                            {(location as EmnSearchResult).eupMyeonDong}
+                          </span>
+                        </>
+                      ) : (
+                        <span className='text-sm font-medium text-gray-900'>
+                          {(location as SearchTouristSpotResponse).spot_name}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
+              )
+            })
           ) : (
             results.length === 0 && (
               <div className='text-sm p-2 text-center text-gray-500'>
