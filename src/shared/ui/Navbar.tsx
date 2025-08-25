@@ -6,15 +6,15 @@ const Navbar = () => {
   const location = useLocation()
   const isTouristPage = location.pathname === '/tourist-spot'
   const searchPlaceholder = isTouristPage
-    ? '관광지 명을 입력해주세요. 예: 불국사'
+    ? '관광지 명을 입력해주세요. 예: 첨성대'
     : '동 이름을 입력해주세요.'
 
   return (
     <header className='flex py-[20px] px-6 pr-56 justify-between items-center border-b border-gray-8'>
       <div className='flex items-center gap-4'>
         <Logo className='cursor-pointer' onClick={() => (window.location.href = '/')} />
-        <SearchBar 
-          placeholder={searchPlaceholder} 
+        <SearchBar
+          placeholder={searchPlaceholder}
           searchType={isTouristPage ? 'tourist' : 'region'}
         />
       </div>
