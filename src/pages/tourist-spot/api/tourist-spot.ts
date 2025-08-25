@@ -36,7 +36,7 @@ export const getState = async (
 
 // 관광지 반경 사고 조회
 export const getTouristSpotAccidents = async (spotId: string): Promise<TouristSpotAccident> => {
-  const response = await apiClient.get<TouristSpotAccident>(`/tourist-spots/${spotId}`)
+  const response = await apiClient.get<TouristSpotAccident>(`/tourist-spots/${spotId}?km=2`)
   return response.data
 }
 
