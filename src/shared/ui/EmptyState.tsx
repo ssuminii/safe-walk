@@ -1,7 +1,7 @@
 import Alert from '@/assets/alert.svg?react'
 
 interface EmptyStateProps {
-  isUnselected: boolean
+  isUnselected?: boolean
 }
 
 const EmptyState = ({ isUnselected }: EmptyStateProps) => {

@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react'
 interface SideBarProps {
   accidentInfo: RegionInfoType | null
   selectedAccidentId: string | null
-  selectedRegionId: string | null
+  selectedRegionId?: string | null
   onAccidentCardClick: (accidentId: string) => void
   accidentList: RegionInfoType[]
 }
