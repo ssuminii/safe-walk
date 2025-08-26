@@ -5,6 +5,7 @@ import { useEffect, useRef } from 'react'
 interface SideBarProps {
   accidentInfo: RegionInfoType | null
   selectedAccidentId: string | null
+  selectedRegionId: string | null
   onAccidentCardClick: (accidentId: string) => void
   accidentList: RegionInfoType[]
 }
@@ -12,6 +13,7 @@ interface SideBarProps {
 const SideBar = ({
   accidentInfo,
   selectedAccidentId,
+  selectedRegionId,
   onAccidentCardClick,
   accidentList,
 }: SideBarProps) => {
@@ -23,6 +25,8 @@ const SideBar = ({
   const isEmpty =
     (accidentInfo && accidentInfo.totalAccident === 0) ||
     (!accidentInfo && accidentData.length === 0)
+
+  const isUnselected = !selectedRegionId && !accidentInfo
 
   useEffect(() => {
     if (selectedCardRef.current) {
@@ -37,7 +41,7 @@ const SideBar = ({
     <div className='flex flex-col flex-1 py-4 px-6 gap-[18px] h-full overflow-y-auto'>
       <RegionInfo accidentInfo={accidentInfo} />
       {isEmpty ? (
-        <EmptyState />
+        <EmptyState isUnselected={isUnselected} />
       ) : (
         accidentData.map((accident) => {
           const isSelected = selectedAccidentId === accident.id

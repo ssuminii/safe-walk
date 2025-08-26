@@ -88,6 +88,7 @@ const MapPage = () => {
         selectedAccidentId={selectedAccidentId}
         onAccidentCardClick={handleAccidentSelect}
         accidentList={accidentList}
+        selectedRegionId={selectedRegionId}
       />
       <KakaoMap
         accidentInfo={accidentInfo}
